@@ -1,12 +1,12 @@
 package com.tronoremunerado.calculator.application.service;
 
-import com.tronoremunerado.calculator.domain.King;
-import com.tronoremunerado.calculator.domain.ShiftTime;
-import com.tronoremunerado.calculator.domain.SalaryType;
-import org.springframework.stereotype.Component;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+
+import org.springframework.stereotype.Component;
+
+import com.tronoremunerado.calculator.domain.King;
+import com.tronoremunerado.calculator.domain.ShiftTime;
 
 @Component
 public class SalaryCalculator {
