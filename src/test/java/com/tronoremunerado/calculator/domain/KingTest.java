@@ -55,7 +55,8 @@ class KingTest {
 
         Set<ConstraintViolation<King>> violations = validator.validate(king);
         assertFalse(violations.isEmpty());
-        assertEquals("Não é de bom tom um rei não se apresentar!", violations.iterator().next().getMessage());
+        assertTrue(violations.stream()
+                .anyMatch(v -> v.getMessage().equals("Majestade, seu nome não é esse, não é mesmo? Ele deve conter apenas letras e números.")));
     }
 
     @ParameterizedTest
@@ -75,6 +76,37 @@ class KingTest {
         assertFalse(violations.isEmpty());
         assertTrue(violations.stream()
                 .anyMatch(v -> v.getMessage().equals("Majestade, seu nome não é esse, não é mesmo? Ele deve conter apenas letras e números.")));
+    }
+
+    @ParameterizedTest
+    @DisplayName("Deve validar tentativas de SQL injection no nome do rei")
+    @ValueSource(strings = {
+        "' OR '1'='1",
+        "'; DROP TABLE users--",
+        "' UNION SELECT * FROM users--",
+        "' OR username IS NOT NULL--",
+        "admin'--",
+        "1' OR '1' = '1",
+        "1 OR 1=1",
+        "1' OR '1'='1'--",
+        "' OR 1=1--",
+        "user' OR 'x'='x"
+    })
+    void shouldValidateUsernameAgainstSqlInjection(String maliciousUsername) {
+        King king = new King(
+                maliciousUsername,
+                10,
+                3,
+                BigDecimal.valueOf(1000),
+                SalaryType.MONTHLY,
+                WorkSchedule.FIVE_ON_TWO
+        );
+
+        Set<ConstraintViolation<King>> violations = validator.validate(king);
+        assertFalse(violations.isEmpty());
+        assertTrue(violations.stream()
+                .anyMatch(v -> v.getMessage().equals("Majestade, seu nome não é esse, não é mesmo? Ele deve conter apenas letras e números.")),
+                "SQL Injection attempt should be blocked: " + maliciousUsername);
     }
 
     @Test
