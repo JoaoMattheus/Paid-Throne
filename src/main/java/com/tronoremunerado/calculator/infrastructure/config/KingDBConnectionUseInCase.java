@@ -1,4 +1,4 @@
-package com.tronoremunerado.calculator.infrastructure.input.rest;
+package com.tronoremunerado.calculator.infrastructure.config;
 
 import com.tronoremunerado.calculator.domain.KingEntity;
 
