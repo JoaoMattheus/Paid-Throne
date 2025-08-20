@@ -1,5 +1,6 @@
 package com.tronoremunerado.calculator.application.mapper;
 
+import com.tronoremunerado.calculator.application.service.BathroomCalculator;
 import com.tronoremunerado.calculator.application.service.SalaryCalculator;
 import com.tronoremunerado.calculator.domain.King;
 import com.tronoremunerado.calculator.domain.KingCalculateResponse;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 public class CalculationResponseMapper {
 
     private final SalaryCalculator salaryCalculator;
+    private final BathroomCalculator bathroomCalculator;
 
     public KingCalculateResponse toResponse(King king) {
         return new KingCalculateResponse(
@@ -22,7 +24,7 @@ public class CalculationResponseMapper {
                 salaryCalculator.calculateEarningsPerMinute(king, ShiftTime.DAILY),
                 salaryCalculator.calculateEarningsPerMinute(king, ShiftTime.MONTHLY),
                 salaryCalculator.calculateEarningsPerMinute(king, ShiftTime.YEARLY),
-                king.salary()
+                bathroomCalculator.calculateDailyPercentageOfShift(king.averageBathroomTime(), king.numberOfVisitsPerDay(), king.workSchedule().getMinutesWorked(ShiftTime.DAILY))
         );
     }
 }

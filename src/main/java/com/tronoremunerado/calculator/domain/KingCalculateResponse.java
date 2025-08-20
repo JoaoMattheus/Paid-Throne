@@ -10,6 +10,6 @@ public record KingCalculateResponse(
         BigDecimal dailyEarnings,
         BigDecimal monthlyEarnings,
         BigDecimal yearlyEarnings,
-        BigDecimal dailyPercentageOfShift
+        double dailyPercentageOfShift
 ) {}
 
