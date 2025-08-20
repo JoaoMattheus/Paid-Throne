@@ -1,9 +1,8 @@
 package com.tronoremunerado.calculator.infrastructure.config;
 
+import com.tronoremunerado.calculator.application.ports.output.KingDBConnectionUseInCase;
 import com.tronoremunerado.calculator.domain.KingEntity;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;

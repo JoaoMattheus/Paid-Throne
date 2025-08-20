@@ -1,4 +1,4 @@
-package com.tronoremunerado.calculator.infrastructure.config;
+package com.tronoremunerado.calculator.application.ports.output;
 
 import com.tronoremunerado.calculator.domain.KingEntity;
 

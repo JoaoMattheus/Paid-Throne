@@ -6,7 +6,7 @@ import com.tronoremunerado.calculator.application.ports.input.CalculateSalaryUse
 import com.tronoremunerado.calculator.domain.King;
 import com.tronoremunerado.calculator.domain.KingCalculateResponse;
 import com.tronoremunerado.calculator.domain.KingEntity;
-import com.tronoremunerado.calculator.infrastructure.config.KingDBConnectionUseInCase;
+import com.tronoremunerado.calculator.application.ports.output.KingDBConnectionUseInCase;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
