@@ -1,12 +1,13 @@
-package com.tronoremunerado.calculator.infrastructure.input.rest;
+package com.tronoremunerado.calculator.infrastructure.rest.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tronoremunerado.calculator.application.ports.input.CalculateSalaryUseCase;
-import com.tronoremunerado.calculator.domain.King;
-import com.tronoremunerado.calculator.domain.SalaryType;
-import com.tronoremunerado.calculator.domain.WorkSchedule;
-import com.tronoremunerado.calculator.infrastructure.rest.controller.KingCalculatorController;
-import com.tronoremunerado.calculator.infrastructure.rest.dto.KingCalculateResponse;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.math.BigDecimal;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,14 +18,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.math.BigDecimal;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tronoremunerado.calculator.application.ports.input.CalculateSalaryUseCase;
+import com.tronoremunerado.calculator.domain.King;
+import com.tronoremunerado.calculator.domain.SalaryType;
+import com.tronoremunerado.calculator.domain.WorkSchedule;
+import com.tronoremunerado.calculator.infrastructure.rest.dto.KingCalculateResponse;
 
 @WebMvcTest(KingCalculatorController.class)
 class CalculatorRestAdapterTest {
