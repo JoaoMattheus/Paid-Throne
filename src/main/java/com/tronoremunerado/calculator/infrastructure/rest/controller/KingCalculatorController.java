@@ -1,8 +1,9 @@
-package com.tronoremunerado.calculator.infrastructure.input.rest;
+package com.tronoremunerado.calculator.infrastructure.rest.controller;
 
 import com.tronoremunerado.calculator.application.ports.input.CalculateSalaryUseCase;
 import com.tronoremunerado.calculator.domain.King;
-import com.tronoremunerado.calculator.domain.KingCalculateResponse;
+import com.tronoremunerado.calculator.infrastructure.rest.dto.KingCalculateResponse;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/v1/calculate")
 @RequiredArgsConstructor
-public class CalculatorRestAdapter {
+public class KingCalculatorController {
     private final CalculateSalaryUseCase calculateSalaryUseCase;
 
     @PostMapping

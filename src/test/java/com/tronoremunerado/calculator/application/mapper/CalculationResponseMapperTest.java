@@ -5,7 +5,7 @@ import com.tronoremunerado.calculator.application.service.SalaryCalculator;
 import com.tronoremunerado.calculator.domain.King;
 import com.tronoremunerado.calculator.domain.SalaryType;
 import com.tronoremunerado.calculator.domain.WorkSchedule;
-import com.tronoremunerado.calculator.domain.KingCalculateResponse;
+import com.tronoremunerado.calculator.infrastructure.rest.dto.KingCalculateResponse;
 import com.tronoremunerado.calculator.domain.ShiftTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

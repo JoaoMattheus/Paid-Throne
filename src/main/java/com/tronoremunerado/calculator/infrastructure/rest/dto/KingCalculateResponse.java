@@ -1,4 +1,4 @@
-package com.tronoremunerado.calculator.domain;
+package com.tronoremunerado.calculator.infrastructure.rest.dto;
 
 import java.math.BigDecimal;
 

@@ -1,4 +1,4 @@
-package com.tronoremunerado.calculator.domain;
+package com.tronoremunerado.calculator.infrastructure.persistence.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

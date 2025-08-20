@@ -3,8 +3,9 @@ package com.tronoremunerado.calculator.application.mapper;
 import com.tronoremunerado.calculator.application.service.BathroomCalculator;
 import com.tronoremunerado.calculator.application.service.SalaryCalculator;
 import com.tronoremunerado.calculator.domain.King;
-import com.tronoremunerado.calculator.domain.KingCalculateResponse;
 import com.tronoremunerado.calculator.domain.ShiftTime;
+import com.tronoremunerado.calculator.infrastructure.rest.dto.KingCalculateResponse;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

@@ -1,7 +1,8 @@
 package com.tronoremunerado.calculator.infrastructure.config;
 
-import com.tronoremunerado.calculator.application.ports.output.KingRepositoryPort;
-import com.tronoremunerado.calculator.domain.KingEntity;
+import com.tronoremunerado.calculator.application.ports.output.KingRepository;
+import com.tronoremunerado.calculator.infrastructure.persistence.entity.KingEntity;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -13,7 +14,7 @@ import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
-public class KingDBConnection implements KingRepositoryPort {
+public class KingDBConnection implements KingRepository {
 
     private static final String TABLE_NAME = "king";
     private static final String COL_ID = "id";

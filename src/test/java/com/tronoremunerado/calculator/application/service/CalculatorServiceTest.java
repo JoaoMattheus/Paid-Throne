@@ -3,9 +3,10 @@ package com.tronoremunerado.calculator.application.service;
 import com.tronoremunerado.calculator.application.mapper.CalculationResponseMapper;
 import com.tronoremunerado.calculator.application.mapper.KingEntityMapper;
 import com.tronoremunerado.calculator.domain.King;
-import com.tronoremunerado.calculator.domain.KingCalculateResponse;
 import com.tronoremunerado.calculator.domain.SalaryType;
 import com.tronoremunerado.calculator.domain.WorkSchedule;
+import com.tronoremunerado.calculator.infrastructure.rest.dto.KingCalculateResponse;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -3,9 +3,11 @@ package com.tronoremunerado.calculator.infrastructure.input.rest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tronoremunerado.calculator.application.ports.input.CalculateSalaryUseCase;
 import com.tronoremunerado.calculator.domain.King;
-import com.tronoremunerado.calculator.domain.KingCalculateResponse;
 import com.tronoremunerado.calculator.domain.SalaryType;
 import com.tronoremunerado.calculator.domain.WorkSchedule;
+import com.tronoremunerado.calculator.infrastructure.rest.controller.KingCalculatorController;
+import com.tronoremunerado.calculator.infrastructure.rest.dto.KingCalculateResponse;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,7 +26,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(CalculatorRestAdapter.class)
+@WebMvcTest(KingCalculatorController.class)
 class CalculatorRestAdapterTest {
 
     @Autowired

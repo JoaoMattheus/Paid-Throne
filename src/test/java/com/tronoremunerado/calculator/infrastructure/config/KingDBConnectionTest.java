@@ -1,6 +1,5 @@
 package com.tronoremunerado.calculator.infrastructure.config;
 
-import com.tronoremunerado.calculator.domain.KingEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,6 +11,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+
+import com.tronoremunerado.calculator.infrastructure.persistence.entity.KingEntity;
 
 import java.math.BigDecimal;
 
