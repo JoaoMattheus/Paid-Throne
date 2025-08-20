@@ -3,6 +3,8 @@ package com.tronoremunerado.calculator.infrastructure.config;
 import com.tronoremunerado.calculator.application.ports.output.KingRepositoryPort;
 import com.tronoremunerado.calculator.infrastructure.persistence.entity.KingEntity;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -13,6 +15,7 @@ import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class KingDBConnection implements KingRepositoryPort {
 
     private static final String TABLE_NAME = "king";
@@ -46,7 +49,9 @@ public class KingDBConnection implements KingRepositoryPort {
         Assert.notNull(king, "KingEntity must not be null");
         Assert.hasText(king.getUsername(), "Username must not be empty");
 
-        var params = new MapSqlParameterSource()
+        log.info("Saving king data for username: {}", king.getUsername());
+
+        MapSqlParameterSource params = new MapSqlParameterSource()
                 .addValue("id", UUID.randomUUID().toString())
                 .addValue("username", king.getUsername())
                 .addValue("dailyMinutes", king.getDailyMinutesSpent())

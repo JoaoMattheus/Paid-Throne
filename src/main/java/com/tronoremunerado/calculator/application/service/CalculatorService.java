@@ -8,12 +8,15 @@ import com.tronoremunerado.calculator.domain.King;
 import com.tronoremunerado.calculator.infrastructure.persistence.entity.KingEntity;
 import com.tronoremunerado.calculator.infrastructure.rest.dto.KingCalculateResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.CompletableFuture;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CalculatorService implements CalculateSalaryUseCase {
 
     private final CalculationResponseMapper mapperKingResponse;
@@ -24,6 +27,8 @@ public class CalculatorService implements CalculateSalaryUseCase {
     public KingCalculateResponse calculateSalary(King king) {
 
         KingCalculateResponse kingResponse = mapperKingResponse.toResponse(king);
+
+        log.info("Bathroom time earnings calculated for King: {}", king.username());
         KingEntity kingEntity = mapperKingEntity.toEntity(kingResponse);
 
         CompletableFuture.runAsync(() -> {
