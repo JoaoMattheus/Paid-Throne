@@ -2,3 +2,14 @@ server:
   port: 8085
   servlet:
     context-path: /calculator
+
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/paid_throne_db}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:db/schema.sql
