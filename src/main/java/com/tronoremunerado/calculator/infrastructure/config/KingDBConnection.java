@@ -1,6 +1,6 @@
 package com.tronoremunerado.calculator.infrastructure.config;
 
-import com.tronoremunerado.calculator.application.ports.output.KingDBConnectionUseInCase;
+import com.tronoremunerado.calculator.application.ports.output.KingRepositoryPort;
 import com.tronoremunerado.calculator.domain.KingEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
@@ -13,7 +13,7 @@ import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
-public class KingDBConnection implements KingDBConnectionUseInCase {
+public class KingDBConnection implements KingRepositoryPort {
 
     private static final String TABLE_NAME = "king";
     private static final String COL_ID = "id";

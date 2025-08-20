@@ -6,7 +6,7 @@ import com.tronoremunerado.calculator.application.ports.input.CalculateSalaryUse
 import com.tronoremunerado.calculator.domain.King;
 import com.tronoremunerado.calculator.domain.KingCalculateResponse;
 import com.tronoremunerado.calculator.domain.KingEntity;
-import com.tronoremunerado.calculator.application.ports.output.KingDBConnectionUseInCase;
+import com.tronoremunerado.calculator.application.ports.output.KingRepositoryPort;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,7 @@ public class CalculatorService implements CalculateSalaryUseCase {
 
     private final CalculationResponseMapper mapperKingResponse;
     private final KingEntityMapper mapperKingEntity;
-    private final KingDBConnectionUseInCase kingDBConnection;
+    private final KingRepositoryPort kingDBConnection;
 
     @Override
     public KingCalculateResponse calculateSalary(King king) {
