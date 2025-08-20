@@ -45,7 +45,7 @@ class CalculatorRestAdapterTest {
                 "King123",
                 10,
                 3,
-                BigDecimal.valueOf(1000),
+                BigDecimal.valueOf(50.0),
                 SalaryType.HOURLY,
                 WorkSchedule.FIVE_ON_TWO
         );
@@ -58,7 +58,7 @@ class CalculatorRestAdapterTest {
                 BigDecimal.valueOf(30),
                 BigDecimal.valueOf(600),
                 BigDecimal.valueOf(7200),
-                BigDecimal.valueOf(1000)
+                50.0
         );
     }
 
@@ -80,7 +80,7 @@ class CalculatorRestAdapterTest {
                 .andExpect(jsonPath("$.dailyEarnings").value(30))
                 .andExpect(jsonPath("$.monthlyEarnings").value(600))
                 .andExpect(jsonPath("$.yearlyEarnings").value(7200))
-                .andExpect(jsonPath("$.dailyPercentageOfShift").value(1000));
+                .andExpect(jsonPath("$.dailyPercentageOfShift").value(50));
 
         verify(calculateSalaryUseCase).calculateSalary(any(King.class));
     }

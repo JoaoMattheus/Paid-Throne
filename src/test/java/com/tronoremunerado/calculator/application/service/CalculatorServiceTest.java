@@ -1,6 +1,7 @@
 package com.tronoremunerado.calculator.application.service;
 
 import com.tronoremunerado.calculator.application.mapper.CalculationResponseMapper;
+import com.tronoremunerado.calculator.application.mapper.KingEntityMapper;
 import com.tronoremunerado.calculator.domain.King;
 import com.tronoremunerado.calculator.domain.KingCalculateResponse;
 import com.tronoremunerado.calculator.domain.SalaryType;
@@ -27,6 +28,9 @@ class CalculatorServiceTest {
     @Mock
     private CalculationResponseMapper mapper;
 
+    @Mock
+    private KingEntityMapper kingEntityMapper;
+
     @InjectMocks
     private CalculatorService calculatorService;
 
@@ -39,7 +43,7 @@ class CalculatorServiceTest {
                 "King123",
                 10,
                 3,
-                BigDecimal.valueOf(1000),
+                BigDecimal.valueOf(1000.0),
                 SalaryType.HOURLY,
                 WorkSchedule.FIVE_ON_TWO
         );
@@ -52,7 +56,7 @@ class CalculatorServiceTest {
                 BigDecimal.valueOf(30),
                 BigDecimal.valueOf(600),
                 BigDecimal.valueOf(7200),
-                BigDecimal.valueOf(1000)
+                1000.0
         );
     }
 

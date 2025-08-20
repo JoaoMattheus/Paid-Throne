@@ -1,7 +1,10 @@
 package com.tronoremunerado.calculator.application.mapper;
 
+import com.tronoremunerado.calculator.application.service.BathroomCalculator;
 import com.tronoremunerado.calculator.application.service.SalaryCalculator;
 import com.tronoremunerado.calculator.domain.King;
+import com.tronoremunerado.calculator.domain.SalaryType;
+import com.tronoremunerado.calculator.domain.WorkSchedule;
 import com.tronoremunerado.calculator.domain.KingCalculateResponse;
 import com.tronoremunerado.calculator.domain.ShiftTime;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,12 +18,14 @@ import static org.mockito.Mockito.*;
 class CalculationResponseMapperTest {
 
     private SalaryCalculator salaryCalculator;
+    private BathroomCalculator bathroomCalculator;
     private CalculationResponseMapper mapper;
 
     @BeforeEach
     void setUp() {
         salaryCalculator = mock(SalaryCalculator.class);
-        mapper = new CalculationResponseMapper(salaryCalculator);
+        bathroomCalculator = mock(BathroomCalculator.class);
+        mapper = new CalculationResponseMapper(salaryCalculator, bathroomCalculator);
     }
 
     @Test
@@ -29,6 +34,8 @@ class CalculationResponseMapperTest {
         King king = mock(King.class);
         when(king.username()).thenReturn("john");
         when(king.salary()).thenReturn(BigDecimal.ZERO);
+        when(king.workSchedule()).thenReturn(WorkSchedule.FIVE_ON_TWO);
+        when(king.salaryType()).thenReturn(SalaryType.HOURLY);
 
         when(salaryCalculator.calculateMinutesSpent(king, ShiftTime.DAILY)).thenReturn(0);
         when(salaryCalculator.calculateMinutesSpent(king, ShiftTime.MONTHLY)).thenReturn(0);
@@ -49,7 +56,7 @@ class CalculationResponseMapperTest {
         assertEquals(BigDecimal.ZERO, response.dailyEarnings());
         assertEquals(BigDecimal.ZERO, response.monthlyEarnings());
         assertEquals(BigDecimal.ZERO, response.yearlyEarnings());
-        assertEquals(BigDecimal.ZERO, response.dailyPercentageOfShift());
+        assertEquals(0.0, response.dailyPercentageOfShift(), 0.001);
     }
 
     @Test
@@ -58,6 +65,8 @@ class CalculationResponseMapperTest {
         King king = mock(King.class);
         when(king.username()).thenReturn("leo");
         when(king.salary()).thenReturn(BigDecimal.valueOf(2000));
+        when(king.workSchedule()).thenReturn(WorkSchedule.FIVE_ON_TWO);
+        when(king.salaryType()).thenReturn(SalaryType.HOURLY);
 
         // Act
         mapper.toResponse(king);
