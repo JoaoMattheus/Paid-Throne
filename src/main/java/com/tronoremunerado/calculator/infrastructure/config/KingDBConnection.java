@@ -1,8 +1,10 @@
 package com.tronoremunerado.calculator.infrastructure.config;
 
 import com.tronoremunerado.calculator.application.ports.output.KingRepositoryPort;
+import com.tronoremunerado.calculator.domain.RankingType;
 import com.tronoremunerado.calculator.infrastructure.persistence.entity.KingEntity;
 import com.tronoremunerado.calculator.infrastructure.persistence.entity.KingdomEntity;
+import com.tronoremunerado.calculator.infrastructure.persistence.entity.RankingEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -12,6 +14,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -48,6 +51,13 @@ public class KingDBConnection implements KingRepositoryPort {
             FROM %s
             """,
             COL_ID, COL_YEARLY_MINUTES, COL_YEARLY_EARNINGS, COL_DAILY_MINUTES, TABLE_NAME
+    );
+
+    private static final String SELECT_RANKING_SQL = String.format("""
+            SELECT %s, %s, %s
+            FROM %s
+            """,
+            COL_USERNAME, COL_DAILY_MINUTES, COL_DAILY_EARNINGS, TABLE_NAME
     );
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
@@ -95,6 +105,23 @@ public class KingDBConnection implements KingRepositoryPort {
             });
         } catch (DataAccessException e) {
             throw new RuntimeException("Failed to retrieve kingdom statistics", e);
+        }
+    }
+
+    @Override
+    public List<RankingEntity> getRanking(RankingType type) {
+        String query = SELECT_RANKING_SQL + type.getQueryOrder();
+        try {
+            return jdbcTemplate.query(query, new MapSqlParameterSource(), (rs, rowNum) -> {
+                RankingEntity ranking = new RankingEntity();
+                ranking.setUsername(rs.getString(COL_USERNAME));
+                ranking.setDailyMinutesSpent(rs.getInt(COL_DAILY_MINUTES));
+                ranking.setDailyEarnings(rs.getBigDecimal(COL_DAILY_EARNINGS));
+                return ranking;
+            });
+        } catch (DataAccessException e) {
+            log.error("Failed to retrieve ranking for type: {}", type, e);
+            throw new RuntimeException("Failed to retrieve ranking", e);
         }
     }
 }
