@@ -3,6 +3,8 @@ package com.tronoremunerado.calculator.infrastructure.rest.controller;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.times;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -20,13 +22,15 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tronoremunerado.calculator.application.ports.input.CalculateSalaryUseCase;
+import com.tronoremunerado.calculator.application.ports.input.KingdomStatisticUseInCase;
 import com.tronoremunerado.calculator.domain.King;
 import com.tronoremunerado.calculator.domain.SalaryType;
 import com.tronoremunerado.calculator.domain.WorkSchedule;
 import com.tronoremunerado.calculator.infrastructure.rest.dto.KingCalculateResponse;
+import com.tronoremunerado.calculator.infrastructure.rest.dto.KingdomStatisticResponse;
 
-@WebMvcTest(KingCalculatorController.class)
-class CalculatorRestAdapterTest {
+@WebMvcTest(KingController.class)
+class KingControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -36,6 +40,9 @@ class CalculatorRestAdapterTest {
 
     @MockBean
     private CalculateSalaryUseCase calculateSalaryUseCase;
+
+    @MockBean
+    private KingdomStatisticUseInCase kingdomStatisticUseInCase;
 
     private King validKing;
     private KingCalculateResponse validResponse;
@@ -91,7 +98,7 @@ class CalculatorRestAdapterTest {
     void shouldReturn400WhenUsernameIsBlank() throws Exception {
         // Arrange
         King invalidKing = new King(
-                "",  // invalid blank username
+                "",
                 10,
                 3,
                 BigDecimal.valueOf(1000),
@@ -112,7 +119,7 @@ class CalculatorRestAdapterTest {
         // Arrange
         King invalidKing = new King(
                 "King123",
-                4,  // invalid bathroom time
+                4,
                 3,
                 BigDecimal.valueOf(1000),
                 SalaryType.HOURLY,
@@ -133,7 +140,7 @@ class CalculatorRestAdapterTest {
         King invalidKing = new King(
                 "King123",
                 10,
-                6,  // invalid number of visits
+                6,
                 BigDecimal.valueOf(1000),
                 SalaryType.HOURLY,
                 WorkSchedule.FIVE_ON_TWO
@@ -154,7 +161,7 @@ class CalculatorRestAdapterTest {
                 "King123",
                 10,
                 3,
-                BigDecimal.valueOf(50001),  // invalid salary
+                BigDecimal.valueOf(50001),
                 SalaryType.HOURLY,
                 WorkSchedule.FIVE_ON_TWO
         );
@@ -175,7 +182,7 @@ class CalculatorRestAdapterTest {
                 10,
                 3,
                 BigDecimal.valueOf(1000),
-                null,  // invalid salary type
+                null,
                 WorkSchedule.FIVE_ON_TWO
         );
 
@@ -196,7 +203,7 @@ class CalculatorRestAdapterTest {
                 3,
                 BigDecimal.valueOf(1000),
                 SalaryType.HOURLY,
-                null  // invalid work schedule
+                null
         );
 
         // Act & Assert
@@ -204,5 +211,102 @@ class CalculatorRestAdapterTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidKing)))
                 .andExpect(status().isBadRequest());
+    }
+
+    // Novos testes para o endpoint de estatísticas
+    @Test
+    @DisplayName("Should get kingdom statistics successfully")
+    void shouldGetKingdomStatisticsSuccessfully() throws Exception {
+        // Arrange
+        KingdomStatisticResponse mockResponse = new KingdomStatisticResponse(
+                10,
+                72000,
+                BigDecimal.valueOf(120000.75),
+                180
+        );
+
+        when(kingdomStatisticUseInCase.getKingdomStatistics()).thenReturn(mockResponse);
+
+        // Act & Assert
+        mockMvc.perform(get("/v1/statistic")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalKings").value(10))
+                .andExpect(jsonPath("$.totalYearlyMinutesSpent").value(72000))
+                .andExpect(jsonPath("$.totalYearlyEarnings").value(120000.75))
+                .andExpect(jsonPath("$.maxDailyMinutesSpent").value(180));
+
+        verify(kingdomStatisticUseInCase, times(1)).getKingdomStatistics();
+    }
+
+    @Test
+    @DisplayName("Should handle empty kingdom statistics")
+    void shouldHandleEmptyKingdomStatistics() throws Exception {
+        // Arrange
+        KingdomStatisticResponse emptyResponse = new KingdomStatisticResponse(
+                0,
+                0,
+                BigDecimal.ZERO,
+                0
+        );
+
+        when(kingdomStatisticUseInCase.getKingdomStatistics()).thenReturn(emptyResponse);
+
+        // Act & Assert
+        mockMvc.perform(get("/v1/statistic")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalKings").value(0))
+                .andExpect(jsonPath("$.totalYearlyMinutesSpent").value(0))
+                .andExpect(jsonPath("$.totalYearlyEarnings").value(0))
+                .andExpect(jsonPath("$.maxDailyMinutesSpent").value(0));
+
+        verify(kingdomStatisticUseInCase, times(1)).getKingdomStatistics();
+    }
+
+    @Test
+    @DisplayName("Should verify service is called for statistics endpoint")
+    void shouldVerifyServiceIsCalledForStatisticsEndpoint() throws Exception {
+        // Arrange
+        KingdomStatisticResponse mockResponse = new KingdomStatisticResponse(
+                1,
+                1440,
+                BigDecimal.valueOf(1000.0),
+                60
+        );
+
+        when(kingdomStatisticUseInCase.getKingdomStatistics()).thenReturn(mockResponse);
+
+        // Act & Assert
+        mockMvc.perform(get("/v1/statistic")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        verify(kingdomStatisticUseInCase, times(1)).getKingdomStatistics();
+    }
+
+    @Test
+    @DisplayName("Should handle large statistics values")
+    void shouldHandleLargeStatisticsValues() throws Exception {
+        // Arrange
+        KingdomStatisticResponse largeResponse = new KingdomStatisticResponse(
+                Integer.MAX_VALUE,
+                Integer.MAX_VALUE,
+                BigDecimal.valueOf(999999999.99),
+                1440
+        );
+
+        when(kingdomStatisticUseInCase.getKingdomStatistics()).thenReturn(largeResponse);
+
+        // Act & Assert
+        mockMvc.perform(get("/v1/statistic")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalKings").value(Integer.MAX_VALUE))
+                .andExpect(jsonPath("$.totalYearlyMinutesSpent").value(Integer.MAX_VALUE))
+                .andExpect(jsonPath("$.totalYearlyEarnings").value(999999999.99))
+                .andExpect(jsonPath("$.maxDailyMinutesSpent").value(1440));
+
+        verify(kingdomStatisticUseInCase, times(1)).getKingdomStatistics();
     }
 }
