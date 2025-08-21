@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/v1")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*", maxAge = 3600)
 @Tag(name = "Bathroom Salary Calculator", description = "API endpoints for calculating bathroom time earnings")
 @Slf4j
 public class KingController {
@@ -66,10 +67,37 @@ public class KingController {
     }
 
     @GetMapping("/statistic")
+    @CrossOrigin(origins = "*")
+    @Operation(
+        summary = "Get kingdom statistics",
+        description = "Retrieves aggregated statistics about all kings in the kingdom"
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Successfully retrieved kingdom statistics",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = KingdomStatisticResponse.class)
+            )
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Internal server error",
+            content = @Content
+        )
+    })
     public ResponseEntity<KingdomStatisticResponse> getStatistics() {
         log.info("Fetching kingdom statistics");
         KingdomStatisticResponse stats = kingdonStatisticUseInCase.getKingdomStatistics();
         log.info("Kingdom statistics retrieved: {}", stats);
         return ResponseEntity.ok(stats);
+    }
+
+    @RequestMapping(value = "/statistic", method = RequestMethod.OPTIONS)
+    @CrossOrigin(origins = "*")
+    public ResponseEntity<Void> handleStatisticOptions() {
+        log.debug("Handling OPTIONS request for /statistic endpoint");
+        return ResponseEntity.ok().build();
     }
 }
