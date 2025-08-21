@@ -59,8 +59,8 @@ class SalaryCalculatorTest {
     }
 
     @Nested
-    @DisplayName("Calculate Earnings Per Minute Tests")
-    class CalculateEarningsPerMinuteTests {
+    @DisplayName("Calculate Total Earnings in Bathroom Tests")
+    class CalculateTotalEarningsInBathroomTests {
 
         @Test
         @DisplayName("Should calculate hourly salary earnings correctly")
@@ -74,7 +74,7 @@ class SalaryCalculatorTest {
                     WorkSchedule.FIVE_ON_TWO
             );
 
-            BigDecimal earnings = calculator.calculateEarningsPerMinute(king, ShiftTime.DAILY);
+            BigDecimal earnings = calculator.calculateTotalEarningsInBathroom(king, ShiftTime.DAILY);
             
             // For hourly rate of R$60, each minute is R$1
             // With 30 minutes spent (10 min * 3 visits), expected earnings is R$30
@@ -93,7 +93,7 @@ class SalaryCalculatorTest {
                     WorkSchedule.FIVE_ON_TWO
             );
 
-            BigDecimal earnings = calculator.calculateEarningsPerMinute(king, ShiftTime.DAILY);
+            BigDecimal earnings = calculator.calculateTotalEarningsInBathroom(king, ShiftTime.DAILY);
             
             // R$480/480 minutes = R$1 per minute
             // With 30 minutes spent, expected earnings is R$30
@@ -112,7 +112,7 @@ class SalaryCalculatorTest {
                     WorkSchedule.FIVE_ON_TWO
             );
 
-            BigDecimal earnings = calculator.calculateEarningsPerMinute(king, ShiftTime.MONTHLY);
+            BigDecimal earnings = calculator.calculateTotalEarningsInBathroom(king, ShiftTime.MONTHLY);
             
             // R$9600/9600 minutes = R$1 per minute
             // With 600 minutes spent monthly (30 min * 20 days), expected earnings is R$600
@@ -131,11 +131,70 @@ class SalaryCalculatorTest {
                     WorkSchedule.FIVE_ON_TWO
             );
 
-            BigDecimal earnings = calculator.calculateEarningsPerMinute(king, ShiftTime.YEARLY);
+            BigDecimal earnings = calculator.calculateTotalEarningsInBathroom(king, ShiftTime.YEARLY);
             
             // R$115200/115200 minutes = R$1 per minute
             // With 7200 minutes spent yearly (30 min * 240 days), expected earnings is R$7200
             assertEquals(BigDecimal.valueOf(7200).setScale(2, RoundingMode.DOWN), earnings);
+        }
+    }
+    
+    @Nested
+    @DisplayName("Calculate Salary Per Minute Tests")
+    class CalculateSalaryPerMinuteTests {
+
+        @Test
+        @DisplayName("Should calculate salary per minute for hourly wage correctly")
+        void shouldCalculateSalaryPerMinuteForHourlyWageCorrectly() {
+            king = new King(
+                    "King123",
+                    10,
+                    3,
+                    BigDecimal.valueOf(120), // R$120 per hour
+                    SalaryType.HOURLY,
+                    WorkSchedule.FIVE_ON_TWO
+            );
+
+            BigDecimal salaryPerMinute = calculator.calculateSalaryPerMinute(king);
+            
+            // R$120 per hour = R$2 per minute
+            assertEquals(BigDecimal.valueOf(2.00).setScale(2, RoundingMode.DOWN), salaryPerMinute);
+        }
+
+        @Test
+        @DisplayName("Should calculate salary per minute for daily wage correctly")
+        void shouldCalculateSalaryPerMinuteForDailyWageCorrectly() {
+            king = new King(
+                    "King123",
+                    10,
+                    3,
+                    BigDecimal.valueOf(480), // R$480 per day
+                    SalaryType.DAILY,
+                    WorkSchedule.FIVE_ON_TWO // 8 hours = 480 minutes
+            );
+
+            BigDecimal salaryPerMinute = calculator.calculateSalaryPerMinute(king);
+            
+            // R$480 per day / 480 minutes = R$1 per minute
+            assertEquals(BigDecimal.valueOf(1.00).setScale(2, RoundingMode.DOWN), salaryPerMinute);
+        }
+
+        @Test
+        @DisplayName("Should calculate salary per minute for monthly wage correctly")
+        void shouldCalculateSalaryPerMinuteForMonthlyWageCorrectly() {
+            king = new King(
+                    "King123",
+                    10,
+                    3,
+                    BigDecimal.valueOf(9600), // R$9,600 per month
+                    SalaryType.MONTHLY,
+                    WorkSchedule.FIVE_ON_TWO // 20 days * 480 minutes = 9600 minutes per month
+            );
+
+            BigDecimal salaryPerMinute = calculator.calculateSalaryPerMinute(king);
+            
+            // R$9,600 per month / 9600 minutes = R$1 per minute
+            assertEquals(BigDecimal.valueOf(1.00).setScale(2, RoundingMode.DOWN), salaryPerMinute);
         }
     }
 }

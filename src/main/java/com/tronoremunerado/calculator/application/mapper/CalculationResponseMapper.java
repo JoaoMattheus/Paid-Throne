@@ -22,9 +22,9 @@ public class CalculationResponseMapper {
                 salaryCalculator.calculateMinutesSpent(king, ShiftTime.DAILY),
                 salaryCalculator.calculateMinutesSpent(king, ShiftTime.MONTHLY),
                 salaryCalculator.calculateMinutesSpent(king, ShiftTime.YEARLY),
-                salaryCalculator.calculateEarningsPerMinute(king, ShiftTime.DAILY),
-                salaryCalculator.calculateEarningsPerMinute(king, ShiftTime.MONTHLY),
-                salaryCalculator.calculateEarningsPerMinute(king, ShiftTime.YEARLY),
+                salaryCalculator.calculateTotalEarningsInBathroom(king, ShiftTime.DAILY),
+                salaryCalculator.calculateTotalEarningsInBathroom(king, ShiftTime.MONTHLY),
+                salaryCalculator.calculateTotalEarningsInBathroom(king, ShiftTime.YEARLY),
                 bathroomCalculator.calculateDailyPercentageOfShift(king.averageBathroomTime(), king.numberOfVisitsPerDay(), king.workSchedule().getMinutesWorked(ShiftTime.DAILY))
         );
     }

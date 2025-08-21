@@ -41,9 +41,9 @@ class CalculationResponseMapperTest {
         when(salaryCalculator.calculateMinutesSpent(king, ShiftTime.MONTHLY)).thenReturn(0);
         when(salaryCalculator.calculateMinutesSpent(king, ShiftTime.YEARLY)).thenReturn(0);
 
-        when(salaryCalculator.calculateEarningsPerMinute(king, ShiftTime.DAILY)).thenReturn(BigDecimal.ZERO);
-        when(salaryCalculator.calculateEarningsPerMinute(king, ShiftTime.MONTHLY)).thenReturn(BigDecimal.ZERO);
-        when(salaryCalculator.calculateEarningsPerMinute(king, ShiftTime.YEARLY)).thenReturn(BigDecimal.ZERO);
+        when(salaryCalculator.calculateTotalEarningsInBathroom(king, ShiftTime.DAILY)).thenReturn(BigDecimal.ZERO);
+        when(salaryCalculator.calculateTotalEarningsInBathroom(king, ShiftTime.MONTHLY)).thenReturn(BigDecimal.ZERO);
+        when(salaryCalculator.calculateTotalEarningsInBathroom(king, ShiftTime.YEARLY)).thenReturn(BigDecimal.ZERO);
 
         // Act
         KingCalculateResponse response = mapper.toResponse(king);
@@ -75,8 +75,8 @@ class CalculationResponseMapperTest {
         verify(salaryCalculator).calculateMinutesSpent(king, ShiftTime.DAILY);
         verify(salaryCalculator).calculateMinutesSpent(king, ShiftTime.MONTHLY);
         verify(salaryCalculator).calculateMinutesSpent(king, ShiftTime.YEARLY);
-        verify(salaryCalculator).calculateEarningsPerMinute(king, ShiftTime.DAILY);
-        verify(salaryCalculator).calculateEarningsPerMinute(king, ShiftTime.MONTHLY);
-        verify(salaryCalculator).calculateEarningsPerMinute(king, ShiftTime.YEARLY);
+        verify(salaryCalculator).calculateTotalEarningsInBathroom(king, ShiftTime.DAILY);
+        verify(salaryCalculator).calculateTotalEarningsInBathroom(king, ShiftTime.MONTHLY);
+        verify(salaryCalculator).calculateTotalEarningsInBathroom(king, ShiftTime.YEARLY);
     }
 }

@@ -27,9 +27,15 @@ public class SalaryCalculator {
         return result;
     }
 
-    public BigDecimal calculateEarningsPerMinute(King king, ShiftTime shiftTime) {
-        log.info("Calculating earnings per minute for user {} - salary type: {}, period: {}", 
-                 king.username(), king.salaryType(), shiftTime);
+    /**
+     * Calcula o valor ganho por minuto baseado no tipo de salário.
+     * 
+     * @param king o usuário para calcular
+     * @return valor ganho por minuto de trabalho
+     */
+    public BigDecimal calculateSalaryPerMinute(King king) {
+        log.info("Calculating salary per minute for user {} - salary type: {}", 
+                 king.username(), king.salaryType());
         
         BigDecimal salaryPerMinute = switch (king.salaryType()) {
             case HOURLY -> king.salary().divide(BigDecimal.valueOf(60), 2, RoundingMode.DOWN);
@@ -39,10 +45,30 @@ public class SalaryCalculator {
         };
 
         log.info("Salary per minute calculated: {}", salaryPerMinute);
+        return salaryPerMinute;
+    }
 
-        BigDecimal totalEarnings = salaryPerMinute.multiply(BigDecimal.valueOf(calculateMinutesSpent(king, shiftTime)));
+    /**
+     * Calcula o valor total ganho durante o tempo passado no banheiro em um período específico.
+     * 
+     * @param king o usuário para calcular
+     * @param shiftTime o período (diário, mensal ou anual)
+     * @return valor total ganho durante o tempo no banheiro no período especificado
+     */
+    public BigDecimal calculateTotalEarningsInBathroom(King king, ShiftTime shiftTime) {
+        log.info("Calculating total earnings in bathroom for user {} - salary type: {}, period: {}", 
+                 king.username(), king.salaryType(), shiftTime);
+        
+        // Usa o método auxiliar para obter o valor por minuto
+        BigDecimal salaryPerMinute = calculateSalaryPerMinute(king);
 
-        log.info("Total earnings calculated for {}: {}", shiftTime, totalEarnings);
+        // Calcula o total de minutos gastos no banheiro no período
+        int minutesSpentInBathroom = calculateMinutesSpent(king, shiftTime);
+        
+        // Multiplica valor por minuto pelos minutos gastos no banheiro
+        BigDecimal totalEarnings = salaryPerMinute.multiply(BigDecimal.valueOf(minutesSpentInBathroom));
+
+        log.info("Total earnings in bathroom calculated for {}: {}", shiftTime, totalEarnings);
         return totalEarnings;
     }
 }
