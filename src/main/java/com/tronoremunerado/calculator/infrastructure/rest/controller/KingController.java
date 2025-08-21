@@ -1,9 +1,11 @@
 package com.tronoremunerado.calculator.infrastructure.rest.controller;
 
 import com.tronoremunerado.calculator.application.ports.input.CalculateSalaryUseCase;
+import com.tronoremunerado.calculator.application.ports.input.KingdomStatisticUseInCase;
 import com.tronoremunerado.calculator.domain.King;
 import com.tronoremunerado.calculator.infrastructure.rest.dto.KingCalculateResponse;
 
+import com.tronoremunerado.calculator.infrastructure.rest.dto.KingdomStatisticResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -16,18 +18,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/v1/calculate")
+@RequestMapping("/v1")
 @RequiredArgsConstructor
 @Tag(name = "Bathroom Salary Calculator", description = "API endpoints for calculating bathroom time earnings")
 @Slf4j
-public class KingCalculatorController {
+public class KingController {
     private final CalculateSalaryUseCase calculateSalaryUseCase;
+    private final KingdomStatisticUseInCase kingdonStatisticUseInCase;
 
     @Operation(
         summary = "Calculate earnings from bathroom time",
@@ -53,7 +53,7 @@ public class KingCalculatorController {
             content = @Content
         )
     })
-    @PostMapping
+    @PostMapping("/calculate")
     public ResponseEntity<KingCalculateResponse> calculateSalary(
             @Parameter(
                 description = "King object containing salary information and bathroom usage details",
@@ -63,5 +63,13 @@ public class KingCalculatorController {
             @RequestBody @Valid King king) {
                 log.info("Calculating bathroom time earnings for King: {}", king.username());
         return ResponseEntity.ok(calculateSalaryUseCase.calculateSalary(king));
+    }
+
+    @GetMapping("/statistic")
+    public ResponseEntity<KingdomStatisticResponse> getStatistics() {
+        log.info("Fetching kingdom statistics");
+        KingdomStatisticResponse stats = kingdonStatisticUseInCase.getKingdomStatistics();
+        log.info("Kingdom statistics retrieved: {}", stats);
+        return ResponseEntity.ok(stats);
     }
 }

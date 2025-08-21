@@ -2,6 +2,7 @@ package com.tronoremunerado.calculator.infrastructure.config;
 
 import com.tronoremunerado.calculator.application.ports.output.KingRepositoryPort;
 import com.tronoremunerado.calculator.infrastructure.persistence.entity.KingEntity;
+import com.tronoremunerado.calculator.infrastructure.persistence.entity.KingdomEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -42,6 +43,13 @@ public class KingDBConnection implements KingRepositoryPort {
             COL_DAILY_EARNINGS, COL_MONTHLY_EARNINGS, COL_YEARLY_EARNINGS, COL_DAILY_PERCENTAGE
     );
 
+    private static final String SELECT_STATISTIC_SQL = String.format("""
+            SELECT count(%s), sum(%s), sum(%s), MAX(%s)
+            FROM %s
+            """,
+            COL_ID, COL_YEARLY_MINUTES, COL_YEARLY_EARNINGS, COL_DAILY_MINUTES, TABLE_NAME
+    );
+
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
     @Override
@@ -71,6 +79,22 @@ public class KingDBConnection implements KingRepositoryPort {
             
         } catch (DataAccessException e) {
             throw new RuntimeException("Failed to save king data", e);
+        }
+    }
+
+    @Override
+    public KingdomEntity getKingdomStatistics() {
+        try {
+            return jdbcTemplate.queryForObject(SELECT_STATISTIC_SQL, new MapSqlParameterSource(), (rs, rowNum) -> {
+                KingdomEntity stats = new KingdomEntity(rs.getInt(1), rs.getInt(2), rs.getBigDecimal(3), rs.getInt(4));
+                stats.setTotalKings(rs.getInt(1));
+                stats.setTotalYearlyMinutesSpent(rs.getInt(2));
+                stats.setTotalYearlyEarnings(rs.getBigDecimal(3));
+                stats.setMaxDailyMinutesSpent(rs.getInt(4));
+                return stats;
+            });
+        } catch (DataAccessException e) {
+            throw new RuntimeException("Failed to retrieve kingdom statistics", e);
         }
     }
 }
