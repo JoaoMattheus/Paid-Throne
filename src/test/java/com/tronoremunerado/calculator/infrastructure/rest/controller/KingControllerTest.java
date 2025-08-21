@@ -10,6 +10,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,10 +27,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tronoremunerado.calculator.application.ports.input.CalculateSalaryUseCase;
 import com.tronoremunerado.calculator.application.ports.input.KingdomStatisticUseInCase;
 import com.tronoremunerado.calculator.domain.King;
+import com.tronoremunerado.calculator.domain.RankingType;
 import com.tronoremunerado.calculator.domain.SalaryType;
 import com.tronoremunerado.calculator.domain.WorkSchedule;
 import com.tronoremunerado.calculator.infrastructure.rest.dto.KingCalculateResponse;
 import com.tronoremunerado.calculator.infrastructure.rest.dto.KingdomStatisticResponse;
+import com.tronoremunerado.calculator.infrastructure.rest.dto.RankingKingResponse;
 
 @WebMvcTest(KingController.class)
 class KingControllerTest {
@@ -308,5 +313,160 @@ class KingControllerTest {
                 .andExpect(jsonPath("$.maxDailyMinutesSpent").value(1440));
 
         verify(kingdomStatisticUseInCase, times(1)).getKingdomStatistics();
+    }
+
+    // ========== RANKING ENDPOINT TESTS ==========
+
+    @Test
+    @DisplayName("Should return 200 and ranking list for HIGHER_EARNINGS")
+    void shouldReturn200AndRankingListForHigherEarnings() throws Exception {
+        // Arrange
+        List<RankingKingResponse> mockRanking = Arrays.asList(
+            new RankingKingResponse("king1", 120, BigDecimal.valueOf(50.0)),
+            new RankingKingResponse("king2", 100, BigDecimal.valueOf(45.0)),
+            new RankingKingResponse("king3", 80, BigDecimal.valueOf(40.0))
+        );
+
+        when(kingdomStatisticUseInCase.getRanking(RankingType.HIGHER_EARNINGS))
+                .thenReturn(mockRanking);
+
+        // Act & Assert
+        mockMvc.perform(get("/v1/ranking")
+                        .param("type", "HIGHER_EARNINGS")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(3))
+                .andExpect(jsonPath("$[0].username").value("king1"))
+                .andExpect(jsonPath("$[0].dailyMinutesSpent").value(120))
+                .andExpect(jsonPath("$[0].dailyEarnings").value(50.0))
+                .andExpect(jsonPath("$[1].username").value("king2"))
+                .andExpect(jsonPath("$[2].username").value("king3"));
+
+        verify(kingdomStatisticUseInCase, times(1)).getRanking(RankingType.HIGHER_EARNINGS);
+    }
+
+    @Test
+    @DisplayName("Should return 200 and ranking list for HIGHER_MINUTES")
+    void shouldReturn200AndRankingListForHigherMinutes() throws Exception {
+        // Arrange
+        List<RankingKingResponse> mockRanking = Arrays.asList(
+            new RankingKingResponse("speedKing", 180, BigDecimal.valueOf(30.0)),
+            new RankingKingResponse("regularKing", 120, BigDecimal.valueOf(25.0))
+        );
+
+        when(kingdomStatisticUseInCase.getRanking(RankingType.HIGHER_MINUTES))
+                .thenReturn(mockRanking);
+
+        // Act & Assert
+        mockMvc.perform(get("/v1/ranking")
+                        .param("type", "HIGHER_MINUTES")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].username").value("speedKing"))
+                .andExpect(jsonPath("$[0].dailyMinutesSpent").value(180))
+                .andExpect(jsonPath("$[1].username").value("regularKing"));
+
+        verify(kingdomStatisticUseInCase, times(1)).getRanking(RankingType.HIGHER_MINUTES);
+    }
+
+    @Test
+    @DisplayName("Should return 200 and ranking list for LOWER_MINUTES")
+    void shouldReturn200AndRankingListForLowerMinutes() throws Exception {
+        // Arrange
+        List<RankingKingResponse> mockRanking = Arrays.asList(
+            new RankingKingResponse("efficientKing", 30, BigDecimal.valueOf(15.0))
+        );
+
+        when(kingdomStatisticUseInCase.getRanking(RankingType.LOWER_MINUTES))
+                .thenReturn(mockRanking);
+
+        // Act & Assert
+        mockMvc.perform(get("/v1/ranking")
+                        .param("type", "LOWER_MINUTES")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[0].username").value("efficientKing"))
+                .andExpect(jsonPath("$[0].dailyMinutesSpent").value(30));
+
+        verify(kingdomStatisticUseInCase, times(1)).getRanking(RankingType.LOWER_MINUTES);
+    }
+
+    @Test
+    @DisplayName("Should return 200 and empty array when no ranking data available")
+    void shouldReturn200AndEmptyArrayWhenNoRankingDataAvailable() throws Exception {
+        // Arrange
+        when(kingdomStatisticUseInCase.getRanking(RankingType.HIGHER_EARNINGS))
+                .thenReturn(Collections.emptyList());
+
+        // Act & Assert
+        mockMvc.perform(get("/v1/ranking")
+                        .param("type", "HIGHER_EARNINGS")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(0));
+
+        verify(kingdomStatisticUseInCase, times(1)).getRanking(RankingType.HIGHER_EARNINGS);
+    }
+
+    @Test
+    @DisplayName("Should return 400 when ranking type parameter is missing")
+    void shouldReturn400WhenRankingTypeParameterIsMissing() throws Exception {
+        // Act & Assert
+        mockMvc.perform(get("/v1/ranking")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("Should return 400 when ranking type parameter is invalid")
+    void shouldReturn400WhenRankingTypeParameterIsInvalid() throws Exception {
+        // Act & Assert
+        mockMvc.perform(get("/v1/ranking")
+                        .param("type", "INVALID_TYPE")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("Should handle service exception in ranking endpoint")
+    void shouldHandleServiceExceptionInRankingEndpoint() throws Exception {
+        // Arrange
+        when(kingdomStatisticUseInCase.getRanking(any(RankingType.class)))
+                .thenThrow(new RuntimeException("Database error"));
+
+        // Act & Assert
+        mockMvc.perform(get("/v1/ranking")
+                        .param("type", "HIGHER_EARNINGS")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isInternalServerError());
+
+        verify(kingdomStatisticUseInCase, times(1)).getRanking(RankingType.HIGHER_EARNINGS);
+    }
+
+    @Test
+    @DisplayName("Should handle ranking with decimal earnings precision")
+    void shouldHandleRankingWithDecimalEarningsPrecision() throws Exception {
+        // Arrange
+        List<RankingKingResponse> mockRanking = Arrays.asList(
+            new RankingKingResponse("preciseKing", 90, BigDecimal.valueOf(33.4567))
+        );
+
+        when(kingdomStatisticUseInCase.getRanking(RankingType.HIGHER_EARNINGS))
+                .thenReturn(mockRanking);
+
+        // Act & Assert
+        mockMvc.perform(get("/v1/ranking")
+                        .param("type", "HIGHER_EARNINGS")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].dailyEarnings").value(33.4567));
+
+        verify(kingdomStatisticUseInCase, times(1)).getRanking(RankingType.HIGHER_EARNINGS);
     }
 }

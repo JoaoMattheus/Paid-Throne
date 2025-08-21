@@ -4,123 +4,183 @@ info:
   description: |
     # 🚽 Paid Throne Calculator API
     
-    Esta API divertida permite aos usuários descobrir quanto tempo passam no banheiro, quanto "ganham" durante esse tempo, e como se comparam com outros em rankings interativos e divertidos.
+    **Uma API divertida que transforma momentos cotidianos em insights financeiros curiosos!**
     
-    ## Funcionalidades
+    Esta aplicação calcula quanto tempo os usuários passam no banheiro durante o expediente e quanto dinheiro "ganham" durante esse período. Combina precisão matemática com humor, oferecendo uma experiência única e interativa.
     
-    * 💰 **Cálculo de ganhos** baseado no tempo de banheiro
-    * 📊 **Suporte para diferentes tipos de salário** (horário, diário, mensal, anual)
-    * ⏰ **Validação de tempo máximo** de banheiro para saúde
-    * 🏢 **Tratamento detalhado de horários** de trabalho
-    * 👑 **Sistema de usuários** com validações personalizadas
+    ## 🎯 Funcionalidades Principais
     
-    ## Como usar
+    * 💰 **Cálculos Financeiros Detalhados**
+      - Ganhos diários, mensais e anuais
+      - Suporte para salários: horário, diário, mensal e anual
+      - Precisão decimal para cálculos financeiros
     
-    1. Envie uma requisição POST para `/v1/calculate` com os dados do usuário
-    2. Receba os cálculos detalhados de tempo e ganhos
-    3. Compare seus resultados com outros usuários!
+    * ⏰ **Gestão de Tempo Inteligente**
+      - Diferentes escalas de trabalho (5x2, 6x1, 4x3, 12x36)
+      - Validação de limites saudáveis (máx. 60min/dia)
+      - Cálculo de porcentagem do tempo de trabalho
     
-    ## Validações importantes
-        - ⚠️ **Validação customizada**: averageBathroomTime × numberOfVisitsPerDay ≤ 60 minutos/dia
-        - 👤 **Username**: @NotBlank, @Size(5-15), @Pattern(apenas letras/números)
-        - 💵 **Salário**: @Min(1), @Max(50000) BigDecimal
-        - 🚽 **Visitas**: @Min(1), @Max(5) por dia
-        - ⏱️ **Tempo médio**: @Min(5) minutos por visita
+    * 🏆 **Sistema de Rankings**
+      - Maiores ganhos (HIGHER_EARNINGS)
+      - Mais tempo no banheiro (HIGHER_MINUTES)
+      - Menos tempo no banheiro (LOWER_MINUTES)
+    
+    * 📊 **Estatísticas Agregadas**
+      - Total de usuários cadastrados
+      - Tempo total gasto por todos os usuários
+      - Ganhos totais calculados
+      - Máximo de tempo diário registrado
+    
+    * 👑 **Validações Personalizadas**
+      - Username: 5-15 caracteres alfanuméricos
+      - Tempo por visita: 5-30 minutos
+      - Visitas diárias: 1-5 vezes
+      - Salário: R$ 1,00 - R$ 50.000,00
+    
+    ## 🚀 Como Integrar
+    
+    ### 1. Configuração Básica
+    ```bash
+    # Variáveis de ambiente necessárias
+    PORT=8080
+    DB_URL=jdbc:postgresql://localhost:5432/paid_throne_db
+    DB_USERNAME=postgres
+    DB_PASSWORD=postgres
+    ```
+    
+    ### 2. Fluxo de Uso
+    1. **POST** `/v1/calculate` - Envie dados do usuário
+    2. **GET** `/v1/statistic` - Consulte estatísticas gerais
+    3. **GET** `/v1/ranking` - Veja os rankings por categoria
+    
+    ### 3. Exemplo Rápido (JavaScript)
+    ```javascript
+    const response = await fetch('/v1/calculate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        username: 'KingDev',
+        averageBathroomTime: 10,
+        numberOfVisitsPerDay: 3,
+        salary: 5000,
+        salaryType: 'MONTHLY',
+        workSchedule: 'FIVE_ON_TWO'
+      })
+    });
+    ```
+    
+    ## 📋 Regras de Negócio
+    
+    ### Cálculo de Ganhos
+    1. **Valor por minuto** = Salário ÷ Minutos trabalhados no período
+    2. **Ganhos no banheiro** = Valor por minuto × Tempo no banheiro
+    3. **Porcentagem** = (Tempo no banheiro ÷ Tempo de trabalho) × 100
+    
+    ### Escalas de Trabalho Suportadas
+    - **FIVE_ON_TWO**: 5 dias/semana (20 dias/mês, 240 dias/ano, 8h/dia)
+    - **SIX_ON_ONE**: 6 dias/semana (26 dias/mês, 312 dias/ano, 7h20min/dia)
+    - **FOUR_ON_THREE**: 4 dias/semana (16 dias/mês, 192 dias/ano, 8h/dia)
+    - **TWELVE_ON_THIRTY_SIX**: Plantão 12x36 (12 dias/mês, 144 dias/ano, 12h/dia)
+    
+    ## 🔧 Tecnologias
+    - **Java 17** + **Spring Boot 3.5.4**
+    - **PostgreSQL** para persistência
+    - **Arquitetura Hexagonal** (Ports & Adapters)
+    - **Validação Bean Validation** customizada
+    - **OpenAPI 3** para documentação
+    
+    ## 💡 Casos de Uso
+    - **Aplicações Web/Mobile** de bem-estar corporativo
+    - **Dashboards** de produtividade com humor
+    - **Ferramentas de RH** para engajamento
+    - **Apps de gamificação** no ambiente de trabalho
     
   version: 1.0.0
   contact:
-    name: Paid Throne Team
-    email: contact@paidthrone.com
-    url: https://github.com/JoaoMattheus/Paid-Throne
+    name: Paid Throne API Support
+    email: support@paidthrone.com
   license:
     name: MIT License
-    url: https://choosealicense.com/licenses/mit/
+    url: https://opensource.org/licenses/MIT
 
 servers:
-  - url: http://localhost:8080
-    description: Ambiente de desenvolvimento
-  - url: https://api.paidthrone.com
-    description: Ambiente de produção
+  - url: http://localhost:8080/calculator
+    description: Servidor de desenvolvimento local
+  - url: https://api.paidthrone.com/calculator
+    description: Servidor de produção
 
 tags:
-  - name: Bathroom Salary Calculator
-    description: Endpoints para calcular ganhos durante o tempo de banheiro
-    externalDocs:
-      description: Documentação adicional
-      url: https://github.com/JoaoMattheus/Paid-Throne/wiki
+  - name: Calculator
+    description: Operações de cálculo de ganhos no banheiro
+  - name: Statistics
+    description: Estatísticas e métricas agregadas
+  - name: Rankings
+    description: Rankings e comparações entre usuários
 
 paths:
   /v1/calculate:
     post:
       tags:
-        - Bathroom Salary Calculator
-      summary: Calcular ganhos do tempo de banheiro
+        - Calculator
+      summary: Calcular ganhos no banheiro
       description: |
-        Calcula quanto dinheiro uma pessoa ganha durante suas pausas para o banheiro com base em seu salário e tempo gasto.
+        Calcula quanto dinheiro um usuário ganha durante o tempo que passa no banheiro, 
+        baseado no salário e escala de trabalho.
         
-        ### Funcionalidades do cálculo:
-        - 📊 Cálculo diário, mensal e anual
-        - 💰 Suporte para diferentes tipos de salário
-        - ⏱️ Análise de percentual do turno de trabalho
-        - 🏥 Validações de saúde (máximo 1h/dia)
+        ### Validações Aplicadas:
+        - **Username**: 5-15 caracteres alfanuméricos
+        - **Tempo médio**: 5-30 minutos por visita
+        - **Visitas diárias**: 1-5 vezes por dia
+        - **Tempo total diário**: Máximo 60 minutos
+        - **Salário**: R$ 1,00 - R$ 50.000,00
         
-        ### Tipos de horário de trabalho suportados:
-        - **6x1**: 6 dias trabalhados, 1 de folga (8h/dia)
-        - **5x2**: 5 dias trabalhados, 2 de folga (8h/dia) 
-        - **4x3**: 4 dias trabalhados, 3 de folga (8h/dia)
-        - **12x36**: 12 horas trabalhadas, 36h de folga (12h/dia)
-      operationId: calculateBathroomSalary
+        ### Como funciona:
+        1. Calcula o valor ganho por minuto baseado no salário e escala
+        2. Multiplica pelo tempo total gasto no banheiro
+        3. Gera estatísticas para períodos diário, mensal e anual
+        4. Salva os dados para rankings futuros
+        
+      operationId: calculateSalary
       requestBody:
-        description: Dados do usuário (King) contendo informações salariais e padrões de uso do banheiro
         required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/King'
             examples:
-              exemplo_basico:
-                summary: Usuário básico - Salário mensal
-                description: Exemplo de um usuário com salário mensal de R$ 5.000
+              desenvolvedor_pleno:
+                summary: Desenvolvedor Pleno - Salário Mensal
+                description: Exemplo de um desenvolvedor com salário mensal de R$ 5.000
                 value:
-                  username: "KingJohn123"
+                  username: "DevKing123"
                   averageBathroomTime: 10
                   numberOfVisitsPerDay: 3
                   salary: 5000.00
                   salaryType: "MONTHLY"
                   workSchedule: "FIVE_ON_TWO"
-              exemplo_horista:
-                summary: Usuário horista - Alta frequência
-                description: Trabalhador horista que vai mais vezes ao banheiro
+              freelancer_horista:
+                summary: Freelancer - Salário por Hora
+                description: Exemplo de freelancer com pagamento por hora
                 value:
-                  username: "WorkerBee99"
+                  username: "FreeLancer"
                   averageBathroomTime: 8
-                  numberOfVisitsPerDay: 4
-                  salary: 25.50
-                  salaryType: "HOURLY"
-                  workSchedule: "SIX_ON_ONE"
-              exemplo_executivo:
-                summary: Executivo - Salário alto
-                description: Executivo com salário alto e menos tempo no banheiro
-                value:
-                  username: "CEO_Boss"
-                  averageBathroomTime: 5
                   numberOfVisitsPerDay: 2
-                  salary: 25000.00
-                  salaryType: "MONTHLY"
+                  salary: 50.00
+                  salaryType: "HOURLY"
                   workSchedule: "FIVE_ON_TWO"
-              exemplo_limite_maximo:
-                summary: No limite - Máximo permitido
-                description: Usuário no limite máximo de tempo permitido
+              plantao_12x36:
+                summary: Enfermeiro - Plantão 12x36
+                description: Profissional de saúde em regime de plantão
                 value:
-                  username: "BathroomKing"
-                  averageBathroomTime: 12
-                  numberOfVisitsPerDay: 5
-                  salary: 3000.00
-                  salaryType: "MONTHLY"
-                  workSchedule: "FOUR_ON_THREE"
+                  username: "NurseKing"
+                  averageBathroomTime: 15
+                  numberOfVisitsPerDay: 4
+                  salary: 200.00
+                  salaryType: "DAILY"
+                  workSchedule: "TWELVE_ON_THIRTY_SIX"
       responses:
         '200':
-          description: ✅ Cálculo realizado com sucesso
+          description: Cálculo realizado com sucesso
           content:
             application/json:
               schema:
@@ -130,146 +190,246 @@ paths:
                   summary: Cálculo bem-sucedido
                   description: Exemplo de resposta com todos os cálculos
                   value:
-                    username: "KingJohn123"
+                    username: "DevKing123"
                     dailyMinutesSpent: 30
                     monthlyMinutesSpent: 600
                     yearlyMinutesSpent: 7200
-                    dailyEarnings: 25.00
-                    monthlyEarnings: 500.00
-                    yearlyEarnings: 6000.00
+                    dailyEarnings: 31.25
+                    monthlyEarnings: 625.00
+                    yearlyEarnings: 7500.00
                     dailyPercentageOfShift: 6.25
-                calculo_executivo:
-                  summary: Cálculo para executivo
-                  description: Exemplo com salário alto
-                  value:
-                    username: "CEO_Boss"
-                    dailyMinutesSpent: 10
-                    monthlyMinutesSpent: 200
-                    yearlyMinutesSpent: 2400
-                    dailyEarnings: 104.17
-                    monthlyEarnings: 2083.33
-                    yearlyEarnings: 25000.00
-                    dailyPercentageOfShift: 2.08
         '400':
-          description: ❌ Entrada inválida - Erros de validação
+          description: Dados inválidos fornecidos
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationError'
               examples:
-                tempo_excessivo:
-                  summary: Tempo total de banheiro excede o máximo
-                  description: Erro quando o tempo total ultrapassa 1 hora por dia
+                tempo_excedido:
+                  summary: Tempo total excedido
+                  description: Usuário tentou inserir mais de 60 minutos por dia
                   value:
-                    timestamp: "2024-01-15T10:30:00Z"
-                    status: 400
-                    error: "Bad Request"
                     message: "Vossa majestade deveria caminhar mais! Ficar mais de uma hora no trono não é saudável!"
-                    path: "/v1/calculate"
-                    validationErrors:
-                      - field: "totalBathroomTime"
-                        message: "Tempo total de banheiro não pode exceder 60 minutos por dia"
+                    field: "totalBathroomTime"
+                    rejectedValue: 75
                 username_invalido:
-                  summary: Username inválido
-                  description: Erro de validação do nome de usuário
+                  summary: Username com caracteres inválidos
+                  description: Username contém caracteres não permitidos
                   value:
-                    timestamp: "2024-01-15T10:30:00Z"
-                    status: 400
-                    error: "Bad Request"
-                    message: "Validation failed"
-                    path: "/v1/calculate"
-                    validationErrors:
-                      - field: "username"
-                        message: "Majestade, seu nome deve ter pelo menos 5 caracteres."
-                      - field: "username"
-                        message: "Majestade, seu nome não é esse, não é mesmo? Ele deve conter apenas letras e números."
-                salario_invalido:
-                  summary: Salário fora dos limites
-                  description: Erro quando salário está fora dos limites permitidos
+                    message: "Majestade, seu nome não é esse, não é mesmo? Ele deve conter apenas letras e números."
+                    field: "username"
+                    rejectedValue: "King@123"
+                visitas_excessivas:
+                  summary: Muitas visitas por dia
+                  description: Mais de 5 visitas por dia não são permitidas
                   value:
-                    timestamp: "2024-01-15T10:30:00Z"
-                    status: 400
-                    error: "Bad Request"
-                    message: "Validation failed"
-                    path: "/v1/calculate"
-                    validationErrors:
-                      - field: "salary"
-                        message: "Majestade, você deve ter um salário digno de sua realeza."
-        '422':
-          description: ⚠️ Entidade não processável - Dados inconsistentes
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BusinessError'
-              examples:
-                dados_inconsistentes:
-                  summary: Dados de negócio inconsistentes
-                  description: Erro quando os dados não fazem sentido do ponto de vista de negócio
-                  value:
-                    timestamp: "2024-01-15T10:30:00Z"
-                    status: 422
-                    error: "Unprocessable Entity"
-                    message: "Os dados fornecidos são inconsistentes para o cálculo"
-                    path: "/v1/calculate"
-                    details:
-                      - "Combinação de salário e horário de trabalho resulta em valores irreais"
+                    message: "Tragam a coroa! Eis aqui um rei que não larga o trono! Você não pode visitar o trono mais de 5 vezes por dia."
+                    field: "numberOfVisitsPerDay"
+                    rejectedValue: 8
         '500':
-          description: 💥 Erro interno do servidor
+          description: Erro interno do servidor
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/InternalServerError'
-              examples:
-                erro_interno:
-                  summary: Erro interno do servidor
-                  description: Erro inesperado durante o processamento
-                  value:
-                    timestamp: "2024-01-15T10:30:00Z"
-                    status: 500
-                    error: "Internal Server Error"
-                    message: "Ocorreu um erro inesperado durante o cálculo"
-                    path: "/v1/calculate"
-                    traceId: "abc123def456"
+                $ref: '#/components/schemas/InternalError'
 
-  /actuator/health:
+  /v1/statistic:
     get:
       tags:
-        - Health Check
-      summary: Verificar saúde da aplicação
-      description: Endpoint para verificar se a aplicação está funcionando corretamente
-      operationId: healthCheck
+        - Statistics
+      summary: Obter estatísticas gerais do reino
+      description: |
+        Retorna estatísticas agregadas de todos os usuários cadastrados no sistema.
+        
+        ### Métricas Incluídas:
+        - **Total de reis**: Número de usuários únicos
+        - **Tempo total anual**: Soma de todos os minutos anuais no banheiro
+        - **Ganhos totais anuais**: Soma de todos os ganhos anuais calculados
+        - **Máximo diário**: Maior tempo diário registrado por um usuário
+        
+        ### Casos de Uso:
+        - Dashboards de administração
+        - Relatórios gerenciais
+        - Métricas de engajamento
+        - Análises de tendências
+        
+      operationId: getStatistics
       responses:
         '200':
-          description: ✅ Aplicação funcionando normalmente
+          description: Estatísticas obtidas com sucesso
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HealthStatus'
-              example:
-                status: "UP"
-                components:
-                  db:
-                    status: "UP"
-                  diskSpace:
-                    status: "UP"
-        '503':
-          description: ❌ Aplicação com problemas
+                $ref: '#/components/schemas/KingdomStatisticResponse'
+              examples:
+                reino_ativo:
+                  summary: Reino com boa atividade
+                  description: Exemplo de estatísticas de um reino com muitos usuários
+                  value:
+                    totalKings: 1500
+                    totalYearlyMinutesSpent: 10800000
+                    totalYearlyEarnings: 25000000.50
+                    maxDailyMinutesSpent: 60
+                reino_inicial:
+                  summary: Reino começando
+                  description: Estatísticas de um reino com poucos usuários
+                  value:
+                    totalKings: 10
+                    totalYearlyMinutesSpent: 72000
+                    totalYearlyEarnings: 180000.00
+                    maxDailyMinutesSpent: 45
+        '500':
+          description: Erro interno do servidor
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HealthStatus'
-              example:
-                status: "DOWN"
-                components:
-                  db:
-                    status: "DOWN"
-                    details:
-                      error: "Connection refused"
+                $ref: '#/components/schemas/InternalError'
+    options:
+      tags:
+        - Statistics
+      summary: Opções CORS para estatísticas
+      description: Endpoint para suporte a requisições CORS
+      operationId: handleStatisticOptions
+      responses:
+        '200':
+          description: Cabeçalhos CORS retornados com sucesso
+
+  /v1/ranking:
+    get:
+      tags:
+        - Rankings
+      summary: Obter ranking dos usuários
+      description: |
+        Retorna um ranking dos top 5 usuários baseado no critério selecionado.
+        
+        ### Tipos de Ranking Disponíveis:
+        
+        #### HIGHER_EARNINGS (Maiores Ganhos)
+        - Ordena por ganhos diários decrescentes
+        - Ideal para ver quem "ganha" mais no banheiro
+        - Em caso de empate, ordena alfabeticamente por username
+        
+        #### HIGHER_MINUTES (Mais Tempo)
+        - Ordena por tempo diário decrescente
+        - Mostra quem passa mais tempo no banheiro
+        - Útil para identificar padrões de comportamento
+        
+        #### LOWER_MINUTES (Menos Tempo)
+        - Ordena por tempo diário crescente
+        - Destaca os usuários mais "eficientes"
+        - Pode motivar competições saudáveis
+        
+        ### Funcionalidades:
+        - **Limite**: Sempre retorna no máximo 5 resultados
+        - **Desempate**: Username em ordem alfabética
+        - **Tempo real**: Dados atualizados a cada consulta
+        
+      operationId: getRanking
+      parameters:
+        - name: type
+          in: query
+          required: true
+          description: Tipo de ranking desejado
+          schema:
+            $ref: '#/components/schemas/RankingType'
+          examples:
+            maiores_ganhos:
+              summary: Maiores ganhos
+              value: "HIGHER_EARNINGS"
+            mais_tempo:
+              summary: Mais tempo no banheiro
+              value: "HIGHER_MINUTES"
+            menos_tempo:
+              summary: Menos tempo no banheiro
+              value: "LOWER_MINUTES"
+      responses:
+        '200':
+          description: Ranking obtido com sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RankingKingResponse'
+                maxItems: 5
+              examples:
+                top_earners:
+                  summary: Top 5 maiores ganhos
+                  description: Ranking dos usuários que mais "ganham" no banheiro
+                  value:
+                    - username: "RichKing"
+                      dailyMinutesSpent: 45
+                      dailyEarnings: 125.50
+                    - username: "MoneyMaker"
+                      dailyMinutesSpent: 40
+                      dailyEarnings: 98.75
+                    - username: "GoldDigger"
+                      dailyMinutesSpent: 35
+                      dailyEarnings: 87.25
+                    - username: "CashKing"
+                      dailyMinutesSpent: 50
+                      dailyEarnings: 75.00
+                    - username: "BigSpender"
+                      dailyMinutesSpent: 30
+                      dailyEarnings: 62.50
+                time_champions:
+                  summary: Top 5 mais tempo
+                  description: Ranking dos usuários que passam mais tempo no banheiro
+                  value:
+                    - username: "TimeKeeper"
+                      dailyMinutesSpent: 60
+                      dailyEarnings: 45.00
+                    - username: "SlowKing"
+                      dailyMinutesSpent: 58
+                      dailyEarnings: 52.20
+                    - username: "RelaxedUser"
+                      dailyMinutesSpent: 55
+                      dailyEarnings: 38.50
+                speed_masters:
+                  summary: Top 5 menos tempo
+                  description: Ranking dos usuários mais "eficientes"
+                  value:
+                    - username: "SpeedKing"
+                      dailyMinutesSpent: 5
+                      dailyEarnings: 8.33
+                    - username: "QuickUser"
+                      dailyMinutesSpent: 8
+                      dailyEarnings: 12.50
+                    - username: "FastTrack"
+                      dailyMinutesSpent: 10
+                      dailyEarnings: 15.75
+        '400':
+          description: Tipo de ranking inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+              examples:
+                tipo_invalido:
+                  summary: Tipo de ranking não suportado
+                  value:
+                    message: "Tipo de ranking inválido"
+                    field: "type"
+                    rejectedValue: "INVALID_TYPE"
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalError'
 
 components:
   schemas:
     King:
       type: object
+      description: |
+        Representa um usuário (Rei) com seus padrões de uso do banheiro e informações salariais.
+        
+        ### Validações Aplicadas:
+        - Username deve ser único no sistema
+        - Tempo total diário não pode exceder 60 minutos
+        - Todos os campos são obrigatórios
+        - Validações customizadas com mensagens em português
       required:
         - username
         - averageBathroomTime
@@ -280,101 +440,119 @@ components:
       properties:
         username:
           type: string
+          description: Nome de usuário único (5-15 caracteres alfanuméricos, protegido contra SQL injection)
+          pattern: '^[a-zA-Z0-9]+$'
           minLength: 5
           maxLength: 15
-          pattern: '^[a-zA-Z0-9]+$'
-          description: |
-            Nome de usuário do Rei (usuário)
-            
-            **Regras:**
-            - Deve ter entre 5 e 15 caracteres
-            - Apenas letras e números são permitidos
-            - Não pode conter espaços ou caracteres especiais
           example: "KingJohn123"
         averageBathroomTime:
           type: integer
+          description: Tempo médio por visita ao banheiro (em minutos)
           minimum: 5
-          maximum: 20
-          description: |
-            Tempo médio gasto no banheiro por visita (em minutos)
-            
-            **Limites:**
-            - Mínimo: 5 minutos (para ser realista)
-            - Máximo: 20 minutos (para manter a saúde)
           example: 10
         numberOfVisitsPerDay:
           type: integer
+          description: Número de visitas ao banheiro por dia
           minimum: 1
           maximum: 5
-          description: |
-            Número de visitas ao banheiro por dia
-            
-            **Limites:**
-            - Mínimo: 1 visita por dia
-            - Máximo: 5 visitas por dia (limite saudável)
           example: 3
         salary:
           type: number
           format: decimal
-          minimum: 1
-          maximum: 50000
-          multipleOf: 0.01
-          description: |
-            Salário na moeda local
-            
-            **Limites:**
-            - Mínimo: 1 moeda (deve ter algum salário)
-            - Máximo: 50.000 moedas (limite do sistema)
-            - Precisão: 2 casas decimais
+          description: Salário na moeda local
+          minimum: 1.00
+          maximum: 50000.00
           example: 5000.00
         salaryType:
           $ref: '#/components/schemas/SalaryType'
         workSchedule:
           $ref: '#/components/schemas/WorkSchedule'
-      example:
-        username: "KingJohn123"
-        averageBathroomTime: 10
-        numberOfVisitsPerDay: 3
-        salary: 5000.00
-        salaryType: "MONTHLY"
-        workSchedule: "FIVE_ON_TWO"
 
     SalaryType:
       type: string
+      description: |
+        Tipo de salário do usuário, usado para calcular o valor por minuto trabalhado.
+        
+        ### Cálculos por Tipo:
+        - **HOURLY**: Divide por 60 minutos
+        - **DAILY**: Divide pelos minutos da jornada diária
+        - **MONTHLY**: Divide pelos minutos trabalhados no mês
+        - **YEARLY**: Divide pelos minutos trabalhados no ano
       enum:
         - HOURLY
         - DAILY
         - MONTHLY
         - YEARLY
-      description: |
-        Tipo de salário do usuário
-        
-        **Opções disponíveis:**
-        - `HOURLY`: Salário por hora trabalhada
-        - `DAILY`: Salário por dia trabalhado
-        - `MONTHLY`: Salário mensal fixo
-        - `YEARLY`: Salário anual
       example: "MONTHLY"
 
     WorkSchedule:
       type: string
+      description: |
+        Escala de trabalho do usuário, define quantos dias e horas trabalha por período.
+        
+        ### Escalas Disponíveis:
+        
+        #### SIX_ON_ONE (6x1)
+        - 6 dias por semana, 1 folga
+        - 26 dias por mês, 312 dias por ano
+        - 7h20min por dia (440 minutos)
+        - Comum em comércio e serviços
+        
+        #### FIVE_ON_TWO (5x2) - Mais comum
+        - 5 dias por semana, 2 folgas
+        - 20 dias por mês, 240 dias por ano  
+        - 8h por dia (480 minutos)
+        - Escala tradicional de escritório
+        
+        #### FOUR_ON_THREE (4x3)
+        - 4 dias por semana, 3 folgas
+        - 16 dias por mês, 192 dias por ano
+        - 8h por dia (480 minutos)
+        - Comum em algumas indústrias
+        
+        #### TWELVE_ON_THIRTY_SIX (12x36)
+        - Plantão de 12h, folga de 36h
+        - 12 dias por mês, 144 dias por ano
+        - 12h por dia (720 minutos)
+        - Comum em hospitais e segurança
       enum:
         - SIX_ON_ONE
         - FIVE_ON_TWO
         - FOUR_ON_THREE
         - TWELVE_ON_THIRTY_SIX
-      description: |
-        Horário de trabalho do usuário
-        
-        **Opções disponíveis:**
-        - `SIX_ON_ONE`: 6 dias trabalhados, 1 de folga (8h/dia, 26 dias/mês)
-        - `FIVE_ON_TWO`: 5 dias trabalhados, 2 de folga (8h/dia, 20 dias/mês) 
-        - `FOUR_ON_THREE`: 4 dias trabalhados, 3 de folga (8h/dia, 16 dias/mês)
-        - `TWELVE_ON_THIRTY_SIX`: 12h trabalhadas, 36h folga (12h/dia, 12 dias/mês)
       example: "FIVE_ON_TWO"
+
+    RankingType:
+      type: string
+      description: |
+        Tipo de ranking para ordenação dos resultados.
+        
+        ### Critérios de Ordenação:
+        - **HIGHER_EARNINGS**: Por ganhos diários (decrescente) + username (crescente)
+        - **HIGHER_MINUTES**: Por tempo diário (decrescente) + username (crescente)
+        - **LOWER_MINUTES**: Por tempo diário (crescente) + username (crescente)
+        
+        Todos os rankings limitam a 5 resultados.
+      enum:
+        - HIGHER_EARNINGS
+        - HIGHER_MINUTES
+        - LOWER_MINUTES
+      example: "HIGHER_EARNINGS"
 
     KingCalculateResponse:
       type: object
+      description: |
+        Resposta contendo todos os cálculos de ganhos e estatísticas de tempo para uso do banheiro.
+        
+        ### Cálculos Incluídos:
+        - **Tempo**: Diário, mensal e anual em minutos
+        - **Ganhos**: Valores monetários para cada período
+        - **Porcentagem**: Percentual do tempo de trabalho gasto no banheiro
+        
+        ### Precisão:
+        - Valores monetários com 2 casas decimais
+        - Porcentagens com 2 casas decimais
+        - Arredondamento para baixo nos cálculos financeiros
       required:
         - username
         - dailyMinutesSpent
@@ -387,278 +565,202 @@ components:
       properties:
         username:
           type: string
-          description: Nome de usuário do Rei (usuário)
+          description: Nome do usuário
           example: "KingJohn123"
         dailyMinutesSpent:
           type: integer
-          minimum: 0
           description: Total de minutos gastos no banheiro por dia
           example: 30
         monthlyMinutesSpent:
           type: integer
-          minimum: 0
           description: Total de minutos gastos no banheiro por mês
           example: 600
         yearlyMinutesSpent:
           type: integer
-          minimum: 0
           description: Total de minutos gastos no banheiro por ano
           example: 7200
         dailyEarnings:
           type: number
           format: decimal
-          minimum: 0
-          multipleOf: 0.01
-          description: Valor ganho durante o tempo de banheiro por dia
-          example: 25.00
+          description: Valor ganho durante o tempo no banheiro por dia
+          example: 31.25
         monthlyEarnings:
           type: number
           format: decimal
-          minimum: 0
-          multipleOf: 0.01
-          description: Valor ganho durante o tempo de banheiro por mês
-          example: 500.00
+          description: Valor ganho durante o tempo no banheiro por mês
+          example: 625.00
         yearlyEarnings:
           type: number
           format: decimal
-          minimum: 0
-          multipleOf: 0.01
-          description: Valor ganho durante o tempo de banheiro por ano
-          example: 6000.00
+          description: Valor ganho durante o tempo no banheiro por ano
+          example: 7500.00
         dailyPercentageOfShift:
           type: number
           format: double
-          minimum: 0
-          maximum: 100
-          description: Percentual do turno de trabalho gasto no banheiro
+          description: Porcentagem do turno de trabalho gasta no banheiro
           example: 6.25
-      example:
-        username: "KingJohn123"
-        dailyMinutesSpent: 30
-        monthlyMinutesSpent: 600
-        yearlyMinutesSpent: 7200
-        dailyEarnings: 25.00
-        monthlyEarnings: 500.00
-        yearlyEarnings: 6000.00
-        dailyPercentageOfShift: 6.25
+
+    KingdomStatisticResponse:
+      type: object
+      description: |
+        Estatísticas agregadas de todos os usuários do sistema.
+        
+        ### Métricas Calculadas:
+        - Contagem total de usuários únicos
+        - Soma de todos os tempos anuais no banheiro
+        - Soma de todos os ganhos anuais calculados
+        - Valor máximo de tempo diário registrado
+        
+        ### Atualizações:
+        - Dados calculados em tempo real a cada consulta
+        - Inclui apenas usuários com cálculos válidos
+        - Valores agregados via SQL para performance
+      required:
+        - totalKings
+        - totalYearlyMinutesSpent
+        - totalYearlyEarnings
+        - maxDailyMinutesSpent
+      properties:
+        totalKings:
+          type: integer
+          description: Número total de usuários cadastrados
+          example: 150
+        totalYearlyMinutesSpent:
+          type: integer
+          description: Total de minutos anuais gastos por todos os usuários
+          example: 1080000
+        totalYearlyEarnings:
+          type: number
+          format: decimal
+          description: Total de ganhos anuais de todos os usuários
+          example: 2500000.50
+        maxDailyMinutesSpent:
+          type: integer
+          description: Maior tempo diário registrado por um usuário
+          maximum: 60
+          example: 60
+
+    RankingKingResponse:
+      type: object
+      description: |
+        Entrada individual em um ranking, contendo dados essenciais do usuário.
+        
+        ### Dados Incluídos:
+        - Username para identificação
+        - Tempo diário para comparações de eficiência
+        - Ganhos diários para comparações financeiras
+        
+        ### Uso nos Rankings:
+        - Ordenação conforme critério selecionado
+        - Máximo de 5 entradas por consulta
+        - Dados atualizados em tempo real
+      required:
+        - username
+        - dailyMinutesSpent
+        - dailyEarnings
+      properties:
+        username:
+          type: string
+          description: Nome do usuário
+          example: "KingRichie"
+        dailyMinutesSpent:
+          type: integer
+          description: Minutos gastos no banheiro por dia
+          example: 45
+        dailyEarnings:
+          type: number
+          format: decimal
+          description: Valor ganho por dia no banheiro
+          example: 125.50
 
     ValidationError:
       type: object
-      required:
-        - timestamp
-        - status
-        - error
-        - message
-        - path
+      description: |
+        Erro de validação retornado quando os dados enviados não atendem aos critérios.
+        
+        ### Tipos de Validação:
+        - **Formato**: Padrões regex, tamanhos mín/máx
+        - **Valores**: Limites numéricos, enums válidos
+        - **Negócio**: Regras customizadas (ex: tempo total < 60min)
+        - **Obrigatórios**: Campos que não podem ser nulos
+        
+        ### Mensagens:
+        - Personalizadas em português com tom humorístico
+        - Específicas para cada tipo de erro
+        - Incluem o valor rejeitado para debug
       properties:
-        timestamp:
-          type: string
-          format: date-time
-          description: Timestamp do erro
-          example: "2024-01-15T10:30:00Z"
-        status:
-          type: integer
-          description: Código de status HTTP
-          example: 400
-        error:
-          type: string
-          description: Tipo do erro
-          example: "Bad Request"
         message:
           type: string
-          description: Mensagem principal do erro
-          example: "Validation failed"
-        path:
-          type: string
-          description: Caminho da requisição que causou o erro
-          example: "/v1/calculate"
-        validationErrors:
-          type: array
-          description: Lista detalhada dos erros de validação
-          items:
-            $ref: '#/components/schemas/FieldError'
-
-    FieldError:
-      type: object
-      required:
-        - field
-        - message
-      properties:
+          description: Mensagem de erro descritiva
+          example: "Majestade, seu nome deve ter pelo menos 5 caracteres."
         field:
           type: string
-          description: Nome do campo que causou o erro
+          description: Campo que causou o erro
           example: "username"
-        message:
-          type: string
-          description: Mensagem de erro específica do campo
-          example: "Majestade, seu nome deve ter pelo menos 5 caracteres."
         rejectedValue:
-          description: Valor que foi rejeitado (opcional)
+          description: Valor que foi rejeitado na validação
           example: "abc"
 
-    BusinessError:
+    InternalError:
       type: object
-      required:
-        - timestamp
-        - status
-        - error
-        - message
-        - path
+      description: |
+        Erro interno do servidor, geralmente relacionado a problemas de infraestrutura.
+        
+        ### Possíveis Causas:
+        - Conexão com banco de dados falhou
+        - Erro de processamento interno
+        - Timeout em operações
+        - Recursos indisponíveis
+        
+        ### Tratamento:
+        - Logs detalhados são gerados automaticamente
+        - Tentativa de recuperação automática quando possível
+        - Monitoramento em tempo real dos erros
       properties:
+        message:
+          type: string
+          description: Mensagem de erro técnica
+          example: "Internal server error occurred"
         timestamp:
           type: string
           format: date-time
-          description: Timestamp do erro
-          example: "2024-01-15T10:30:00Z"
-        status:
-          type: integer
-          description: Código de status HTTP
-          example: 422
-        error:
-          type: string
-          description: Tipo do erro
-          example: "Unprocessable Entity"
-        message:
-          type: string
-          description: Mensagem principal do erro
-          example: "Os dados fornecidos são inconsistentes para o cálculo"
+          description: Momento em que o erro ocorreu
+          example: "2024-08-21T10:15:30.000Z"
         path:
           type: string
-          description: Caminho da requisição que causou o erro
+          description: Endpoint que causou o erro
           example: "/v1/calculate"
-        details:
-          type: array
-          description: Detalhes adicionais sobre o erro de negócio
-          items:
-            type: string
-          example:
-            - "Combinação de salário e horário de trabalho resulta em valores irreais"
-
-    InternalServerError:
-      type: object
-      required:
-        - timestamp
-        - status
-        - error
-        - message
-        - path
-      properties:
-        timestamp:
-          type: string
-          format: date-time
-          description: Timestamp do erro
-          example: "2024-01-15T10:30:00Z"
-        status:
-          type: integer
-          description: Código de status HTTP
-          example: 500
-        error:
-          type: string
-          description: Tipo do erro
-          example: "Internal Server Error"
-        message:
-          type: string
-          description: Mensagem principal do erro
-          example: "Ocorreu um erro inesperado durante o cálculo"
-        path:
-          type: string
-          description: Caminho da requisição que causou o erro
-          example: "/v1/calculate"
-        traceId:
-          type: string
-          description: ID de rastreamento para debugging
-          example: "abc123def456"
-
-    HealthStatus:
-      type: object
-      required:
-        - status
-      properties:
-        status:
-          type: string
-          enum: [UP, DOWN, OUT_OF_SERVICE, UNKNOWN]
-          description: Status geral da aplicação
-          example: "UP"
-        components:
-          type: object
-          description: Status dos componentes individuais
-          additionalProperties:
-            type: object
-            properties:
-              status:
-                type: string
-                enum: [UP, DOWN, OUT_OF_SERVICE, UNKNOWN]
-              details:
-                type: object
-                description: Detalhes adicionais sobre o componente
-          example:
-            db:
-              status: "UP"
-            diskSpace:
-              status: "UP"
 
   examples:
-    KingBasico:
-      summary: Usuário básico
-      description: Exemplo de usuário com configurações padrão
+    KingExampleComplete:
+      summary: Exemplo Completo de Usuário
+      description: Exemplo com todos os campos preenchidos corretamente
       value:
-        username: "KingJohn123"
-        averageBathroomTime: 10
-        numberOfVisitsPerDay: 3
-        salary: 5000.00
-        salaryType: "MONTHLY"
-        workSchedule: "FIVE_ON_TWO"
-
-    KingHorista:
-      summary: Trabalhador horista
-      description: Exemplo de trabalhador com salário por hora
-      value:
-        username: "WorkerBee99"
-        averageBathroomTime: 8
-        numberOfVisitsPerDay: 4
-        salary: 25.50
-        salaryType: "HOURLY"
-        workSchedule: "SIX_ON_ONE"
-
-    KingExecutivo:
-      summary: Executivo
-      description: Exemplo de executivo com salário alto
-      value:
-        username: "CEO_Boss"
-        averageBathroomTime: 5
+        username: "CompleteKing"
+        averageBathroomTime: 12
         numberOfVisitsPerDay: 2
-        salary: 25000.00
+        salary: 7500.00
         salaryType: "MONTHLY"
         workSchedule: "FIVE_ON_TWO"
 
-  securitySchemes:
-    ApiKeyAuth:
-      type: apiKey
-      in: header
-      name: X-API-Key
-      description: |
-        Chave de API para autenticação (futura implementação)
-        
-        **Nota:** Atualmente a API é pública, mas futuramente pode requerer autenticação para:
-        - Rate limiting personalizado
-        - Histórico de cálculos
-        - Rankings personalizados
+    KingExampleMinimal:
+      summary: Exemplo Mínimo Válido
+      description: Valores mínimos que ainda são válidos
+      value:
+        username: "MinKg"
+        averageBathroomTime: 5
+        numberOfVisitsPerDay: 1
+        salary: 1.00
+        salaryType: "HOURLY"
+        workSchedule: "FIVE_ON_TWO"
 
-# Configurações globais
-security: []  # API atualmente pública
-
-# Configurações adicionais para ferramentas
-x-tagGroups:
-  - name: Core API
-    tags:
-      - Bathroom Salary Calculator
-  - name: Monitoring
-    tags:
-      - Health Check
-
-x-samples-languages:
-  - curl
-  - javascript
-  - python
-  - java
-  - csharp
+    KingExampleMaximal:
+      summary: Exemplo com Valores Máximos
+      description: Valores máximos permitidos pelo sistema
+      value:
+        username: "MaximalKing123"
+        averageBathroomTime: 12
+        numberOfVisitsPerDay: 5
+        salary: 50000.00
+        salaryType: "YEARLY"
+        workSchedule: "TWELVE_ON_THIRTY_SIX"

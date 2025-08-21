@@ -1,7 +1,9 @@
 package com.tronoremunerado.calculator.infrastructure.config;
 
+import com.tronoremunerado.calculator.domain.RankingType;
 import com.tronoremunerado.calculator.infrastructure.persistence.entity.KingEntity;
 import com.tronoremunerado.calculator.infrastructure.persistence.entity.KingdomEntity;
+import com.tronoremunerado.calculator.infrastructure.persistence.entity.RankingEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -19,6 +21,9 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -283,6 +288,187 @@ class KingDBConnectionTest {
             String capturedSql = sqlCaptor.getValue();
             assertThat(capturedSql).containsIgnoringWhitespaces("SELECT count(id), sum(yearly_minutes_spent), sum(yearly_earnings), MAX(daily_minutes_spent)");
             assertThat(capturedSql).containsIgnoringWhitespaces("FROM king");
+        }
+    }
+
+    @Nested
+    @DisplayName("GetRanking Tests")
+    class GetRankingTests {
+
+        @Test
+        @DisplayName("Should get ranking successfully for HIGHER_EARNINGS")
+        void shouldGetRankingSuccessfullyForHigherEarnings() throws SQLException {
+            // Given
+            List<RankingEntity> expectedRanking = createMockRankingList();
+            
+            when(resultSet.getString("username")).thenReturn("king1", "king2");
+            when(resultSet.getInt("daily_minutes_spent")).thenReturn(120, 100);
+            when(resultSet.getBigDecimal("daily_earnings")).thenReturn(BigDecimal.valueOf(50.0), BigDecimal.valueOf(45.0));
+            
+            when(jdbcTemplate.query(anyString(), any(MapSqlParameterSource.class), any(RowMapper.class)))
+                    .thenAnswer(invocation -> {
+                        RowMapper<RankingEntity> mapper = invocation.getArgument(2);
+                        List<RankingEntity> result = new ArrayList<>();
+                        result.add(mapper.mapRow(resultSet, 1));
+                        result.add(mapper.mapRow(resultSet, 2));
+                        return result;
+                    });
+
+            // When
+            List<RankingEntity> result = kingDBConnection.getRanking(RankingType.HIGHER_EARNINGS);
+
+            // Then
+            assertThat(result).hasSize(2);
+            assertThat(result.get(0).getUsername()).isEqualTo("king1");
+            assertThat(result.get(0).getDailyMinutesSpent()).isEqualTo(120);
+            assertThat(result.get(0).getDailyEarnings()).isEqualTo(BigDecimal.valueOf(50.0));
+
+            // Verify SQL construction
+            ArgumentCaptor<String> sqlCaptor = ArgumentCaptor.forClass(String.class);
+            verify(jdbcTemplate).query(sqlCaptor.capture(), any(MapSqlParameterSource.class), any(RowMapper.class));
+            
+            String capturedSql = sqlCaptor.getValue();
+            assertThat(capturedSql).contains("SELECT username, daily_minutes_spent, daily_earnings");
+            assertThat(capturedSql).contains("FROM king");
+            assertThat(capturedSql).contains("order by daily_earnings desc, username asc limit 5;");
+        }
+
+        @Test
+        @DisplayName("Should get ranking successfully for HIGHER_MINUTES")
+        void shouldGetRankingSuccessfullyForHigherMinutes() throws SQLException {
+            // Given
+            when(resultSet.getString("username")).thenReturn("speedKing");
+            when(resultSet.getInt("daily_minutes_spent")).thenReturn(180);
+            when(resultSet.getBigDecimal("daily_earnings")).thenReturn(BigDecimal.valueOf(30.0));
+            
+            when(jdbcTemplate.query(anyString(), any(MapSqlParameterSource.class), any(RowMapper.class)))
+                    .thenAnswer(invocation -> {
+                        RowMapper<RankingEntity> mapper = invocation.getArgument(2);
+                        return Collections.singletonList(mapper.mapRow(resultSet, 1));
+                    });
+
+            // When
+            List<RankingEntity> result = kingDBConnection.getRanking(RankingType.HIGHER_MINUTES);
+
+            // Then
+            assertThat(result).hasSize(1);
+            assertThat(result.get(0).getUsername()).isEqualTo("speedKing");
+            assertThat(result.get(0).getDailyMinutesSpent()).isEqualTo(180);
+
+            // Verify SQL construction
+            ArgumentCaptor<String> sqlCaptor = ArgumentCaptor.forClass(String.class);
+            verify(jdbcTemplate).query(sqlCaptor.capture(), any(MapSqlParameterSource.class), any(RowMapper.class));
+            
+            String capturedSql = sqlCaptor.getValue();
+            assertThat(capturedSql).contains("order by daily_minutes_spent desc, username asc limit 5;");
+        }
+
+        @Test
+        @DisplayName("Should get ranking successfully for LOWER_MINUTES")
+        void shouldGetRankingSuccessfullyForLowerMinutes() throws SQLException {
+            // Given
+            when(resultSet.getString("username")).thenReturn("efficientKing");
+            when(resultSet.getInt("daily_minutes_spent")).thenReturn(30);
+            when(resultSet.getBigDecimal("daily_earnings")).thenReturn(BigDecimal.valueOf(15.0));
+            
+            when(jdbcTemplate.query(anyString(), any(MapSqlParameterSource.class), any(RowMapper.class)))
+                    .thenAnswer(invocation -> {
+                        RowMapper<RankingEntity> mapper = invocation.getArgument(2);
+                        return Collections.singletonList(mapper.mapRow(resultSet, 1));
+                    });
+
+            // When
+            List<RankingEntity> result = kingDBConnection.getRanking(RankingType.LOWER_MINUTES);
+
+            // Then
+            assertThat(result).hasSize(1);
+            assertThat(result.get(0).getUsername()).isEqualTo("efficientKing");
+            assertThat(result.get(0).getDailyMinutesSpent()).isEqualTo(30);
+
+            // Verify SQL construction
+            ArgumentCaptor<String> sqlCaptor = ArgumentCaptor.forClass(String.class);
+            verify(jdbcTemplate).query(sqlCaptor.capture(), any(MapSqlParameterSource.class), any(RowMapper.class));
+            
+            String capturedSql = sqlCaptor.getValue();
+            assertThat(capturedSql).contains("order by daily_minutes_spent asc, username asc limit 5;");
+        }
+
+        @Test
+        @DisplayName("Should return empty list when no ranking data found")
+        void shouldReturnEmptyListWhenNoRankingDataFound() {
+            // Given
+            when(jdbcTemplate.query(anyString(), any(MapSqlParameterSource.class), any(RowMapper.class)))
+                    .thenReturn(Collections.emptyList());
+
+            // When
+            List<RankingEntity> result = kingDBConnection.getRanking(RankingType.HIGHER_EARNINGS);
+
+            // Then
+            assertThat(result).isEmpty();
+        }
+
+        @Test
+        @DisplayName("Should throw RuntimeException when DataAccessException occurs during ranking query")
+        void shouldThrowRuntimeExceptionWhenDataAccessExceptionOccursduringRankingQuery() {
+            // Given
+            when(jdbcTemplate.query(anyString(), any(MapSqlParameterSource.class), any(RowMapper.class)))
+                    .thenThrow(new DataAccessException("Database connection failed") {});
+
+            // When & Then
+            assertThatThrownBy(() -> kingDBConnection.getRanking(RankingType.HIGHER_EARNINGS))
+                    .isInstanceOf(RuntimeException.class)
+                    .hasMessage("Failed to retrieve ranking");
+        }
+
+        @Test
+        @DisplayName("Should use correct column names in ranking SQL")
+        void shouldUseCorrectColumnNamesInRankingSQL() {
+            // Given
+            when(jdbcTemplate.query(anyString(), any(MapSqlParameterSource.class), any(RowMapper.class)))
+                    .thenReturn(Collections.emptyList());
+
+            // When
+            kingDBConnection.getRanking(RankingType.HIGHER_EARNINGS);
+
+            // Then
+            ArgumentCaptor<String> sqlCaptor = ArgumentCaptor.forClass(String.class);
+            verify(jdbcTemplate).query(sqlCaptor.capture(), any(MapSqlParameterSource.class), any(RowMapper.class));
+            
+            String capturedSql = sqlCaptor.getValue();
+            assertThat(capturedSql).contains("username");
+            assertThat(capturedSql).contains("daily_minutes_spent");
+            assertThat(capturedSql).contains("daily_earnings");
+        }
+
+        @Test
+        @DisplayName("Should handle all ranking types correctly")
+        void shouldHandleAllRankingTypesCorrectly() {
+            // Given
+            when(jdbcTemplate.query(anyString(), any(MapSqlParameterSource.class), any(RowMapper.class)))
+                    .thenReturn(Collections.emptyList());
+
+            // When & Then - Test all enum values
+            for (RankingType type : RankingType.values()) {
+                assertThatNoException().isThrownBy(() -> kingDBConnection.getRanking(type));
+            }
+        }
+
+        private List<RankingEntity> createMockRankingList() {
+            List<RankingEntity> ranking = new ArrayList<>();
+            
+            RankingEntity entity1 = new RankingEntity();
+            entity1.setUsername("king1");
+            entity1.setDailyMinutesSpent(120);
+            entity1.setDailyEarnings(BigDecimal.valueOf(50.0));
+            ranking.add(entity1);
+            
+            RankingEntity entity2 = new RankingEntity();
+            entity2.setUsername("king2");
+            entity2.setDailyMinutesSpent(100);
+            entity2.setDailyEarnings(BigDecimal.valueOf(45.0));
+            ranking.add(entity2);
+            
+            return ranking;
         }
     }
 }
