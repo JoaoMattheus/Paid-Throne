@@ -313,7 +313,7 @@ if __name__ == "__main__":
         # Estatísticas gerais
         stats = api.get_statistics()
         print(f"\n📊 Reino tem {stats['totalKings']} usuários")
-        print(f"💸 Total de ganhos anuais: R$ {stats['totalYearlyEarnings']:,.2f}")
+        print(f"💸 Total de ganhos diários: R$ {stats['totalDailyEarnings']:,.2f}")
         
     except Exception as e:
         print(f"❌ Erro: {e}")
@@ -398,8 +398,8 @@ public class PaidThroneApiClient {
                 url, KingdomStatisticResponse.class);
             
             KingdomStatisticResponse stats = response.getBody();
-            log.info("Estatísticas obtidas: {} usuários, {} ganhos totais", 
-                stats.totalKings(), stats.totalYearlyEarnings());
+            log.info("Estatísticas obtidas: {} usuários, {} ganhos diários totais", 
+                stats.totalKings(), stats.totalDailyEarnings());
             
             return stats;
             
@@ -466,8 +466,8 @@ class CorporateDashboard {
 
       this.updateUI({
         totalUsers: stats.totalKings,
-        totalEarnings: stats.totalYearlyEarnings,
-        averageTime: stats.totalYearlyMinutesSpent / stats.totalKings,
+        totalEarnings: stats.totalDailyEarnings,
+        averageTime: stats.totalDailyMinutesSpent / stats.totalKings,
         topEarners,
         timeSpenders
       });
@@ -558,8 +558,8 @@ public class ReportService {
         
         report.append("📊 RELATÓRIO SEMANAL - PAID THRONE\n\n");
         report.append(String.format("👑 Total de usuários: %d\n", stats.totalKings()));
-        report.append(String.format("💰 Ganhos totais anuais: R$ %,.2f\n", stats.totalYearlyEarnings()));
-        report.append(String.format("⏰ Tempo total anual: %d minutos\n\n", stats.totalYearlyMinutesSpent()));
+        report.append(String.format("💰 Ganhos diários totais: R$ %,.2f\n", stats.totalDailyEarnings()));
+        report.append(String.format("⏰ Tempo diário total: %d minutos\n\n", stats.totalDailyMinutesSpent()));
         
         report.append("🏆 TOP 5 MAIORES GANHOS:\n");
         for (int i = 0; i < topEarners.size(); i++) {

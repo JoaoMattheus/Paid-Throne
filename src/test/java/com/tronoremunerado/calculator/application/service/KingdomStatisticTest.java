@@ -83,8 +83,8 @@ class KingdomStatisticTest {
         // Assert
         assertNotNull(result);
         assertEquals(mockResponse.totalKings(), result.totalKings());
-        assertEquals(mockResponse.totalYearlyMinutesSpent(), result.totalYearlyMinutesSpent());
-        assertEquals(mockResponse.totalYearlyEarnings(), result.totalYearlyEarnings());
+        assertEquals(mockResponse.totalDailyMinutesSpent(), result.totalDailyMinutesSpent());
+        assertEquals(mockResponse.totalDailyEarnings(), result.totalDailyEarnings());
         assertEquals(mockResponse.maxDailyMinutesSpent(), result.maxDailyMinutesSpent());
 
         verify(kingRepositoryPort, times(1)).getKingdomStatistics();
@@ -107,8 +107,8 @@ class KingdomStatisticTest {
         // Assert
         assertNotNull(result);
         assertEquals(0, result.totalKings());
-        assertEquals(0, result.totalYearlyMinutesSpent());
-        assertEquals(BigDecimal.ZERO, result.totalYearlyEarnings());
+        assertEquals(0, result.totalDailyMinutesSpent());
+        assertEquals(BigDecimal.ZERO, result.totalDailyEarnings());
         assertEquals(0, result.maxDailyMinutesSpent());
 
         verify(kingRepositoryPort, times(1)).getKingdomStatistics();
@@ -176,8 +176,8 @@ class KingdomStatisticTest {
         // Assert
         assertNotNull(result);
         assertEquals(Integer.MAX_VALUE, result.totalKings());
-        assertEquals(Integer.MAX_VALUE, result.totalYearlyMinutesSpent());
-        assertEquals(BigDecimal.valueOf(Double.MAX_VALUE), result.totalYearlyEarnings());
+        assertEquals(Integer.MAX_VALUE, result.totalDailyMinutesSpent());
+        assertEquals(BigDecimal.valueOf(Double.MAX_VALUE), result.totalDailyEarnings());
         assertEquals(Integer.MAX_VALUE, result.maxDailyMinutesSpent());
     }
 

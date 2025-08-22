@@ -50,7 +50,7 @@ public class KingDBConnection implements KingRepositoryPort {
             SELECT count(%s), sum(%s), sum(%s), MAX(%s)
             FROM %s
             """,
-            COL_ID, COL_YEARLY_MINUTES, COL_YEARLY_EARNINGS, COL_DAILY_MINUTES, TABLE_NAME
+            COL_ID, COL_DAILY_MINUTES, COL_DAILY_EARNINGS, COL_DAILY_MINUTES, TABLE_NAME
     );
 
     private static final String SELECT_RANKING_SQL = String.format("""
@@ -98,8 +98,8 @@ public class KingDBConnection implements KingRepositoryPort {
             return jdbcTemplate.queryForObject(SELECT_STATISTIC_SQL, new MapSqlParameterSource(), (rs, rowNum) -> {
                 KingdomEntity stats = new KingdomEntity(rs.getInt(1), rs.getInt(2), rs.getBigDecimal(3), rs.getInt(4));
                 stats.setTotalKings(rs.getInt(1));
-                stats.setTotalYearlyMinutesSpent(rs.getInt(2));
-                stats.setTotalYearlyEarnings(rs.getBigDecimal(3));
+                stats.setTotalDailyMinutesSpent(rs.getInt(2));
+                stats.setTotalDailyEarnings(rs.getBigDecimal(3));
                 stats.setMaxDailyMinutesSpent(rs.getInt(4));
                 return stats;
             });

@@ -45,8 +45,8 @@ class KingdomStatisticResponseMapperTest {
         // Assert
         assertNotNull(response);
         assertEquals(kingdomEntity.getTotalKings(), response.totalKings());
-        assertEquals(kingdomEntity.getTotalYearlyMinutesSpent(), response.totalYearlyMinutesSpent());
-        assertEquals(kingdomEntity.getTotalYearlyEarnings(), response.totalYearlyEarnings());
+        assertEquals(kingdomEntity.getTotalDailyMinutesSpent(), response.totalDailyMinutesSpent());
+        assertEquals(kingdomEntity.getTotalDailyEarnings(), response.totalDailyEarnings());
         assertEquals(kingdomEntity.getMaxDailyMinutesSpent(), response.maxDailyMinutesSpent());
     }
 
@@ -67,8 +67,8 @@ class KingdomStatisticResponseMapperTest {
         // Assert
         assertNotNull(response);
         assertEquals(0, response.totalKings());
-        assertEquals(0, response.totalYearlyMinutesSpent());
-        assertEquals(BigDecimal.ZERO, response.totalYearlyEarnings());
+        assertEquals(0, response.totalDailyMinutesSpent());
+        assertEquals(BigDecimal.ZERO, response.totalDailyEarnings());
         assertEquals(0, response.maxDailyMinutesSpent());
     }
 
@@ -89,8 +89,8 @@ class KingdomStatisticResponseMapperTest {
         // Assert
         assertNotNull(response);
         assertEquals(1000, response.totalKings());
-        assertEquals(525600000, response.totalYearlyMinutesSpent());
-        assertEquals(BigDecimal.valueOf(999999999.99), response.totalYearlyEarnings());
+        assertEquals(525600000, response.totalDailyMinutesSpent());
+        assertEquals(BigDecimal.valueOf(999999999.99), response.totalDailyEarnings());
         assertEquals(1440, response.maxDailyMinutesSpent());
     }
 
@@ -120,8 +120,8 @@ class KingdomStatisticResponseMapperTest {
 
         // Assert
         assertNotNull(response);
-        assertEquals(preciseEarnings, response.totalYearlyEarnings());
-        assertEquals(0, preciseEarnings.compareTo(response.totalYearlyEarnings()));
+        assertEquals(preciseEarnings, response.totalDailyEarnings());
+        assertEquals(0, preciseEarnings.compareTo(response.totalDailyEarnings()));
     }
 
     // ========== RANKING MAPPING TESTS ==========

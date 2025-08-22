@@ -267,16 +267,16 @@ paths:
                   description: Exemplo de estatísticas de um reino com muitos usuários
                   value:
                     totalKings: 1500
-                    totalYearlyMinutesSpent: 10800000
-                    totalYearlyEarnings: 25000000.50
+                    totalDailyMinutesSpent: 7200
+                    totalDailyEarnings: 18000.00
                     maxDailyMinutesSpent: 60
                 reino_inicial:
                   summary: Reino começando
                   description: Estatísticas de um reino com poucos usuários
                   value:
                     totalKings: 10
-                    totalYearlyMinutesSpent: 72000
-                    totalYearlyEarnings: 180000.00
+                    totalDailyMinutesSpent: 480
+                    totalDailyEarnings: 1200.00
                     maxDailyMinutesSpent: 45
         '500':
           description: Erro interno do servidor
@@ -607,8 +607,8 @@ components:
         
         ### Métricas Calculadas:
         - Contagem total de usuários únicos
-        - Soma de todos os tempos anuais no banheiro
-        - Soma de todos os ganhos anuais calculados
+        - Soma de todos os tempos diários no banheiro
+        - Soma de todos os ganhos diários calculados
         - Valor máximo de tempo diário registrado
         
         ### Atualizações:
@@ -617,23 +617,23 @@ components:
         - Valores agregados via SQL para performance
       required:
         - totalKings
-        - totalYearlyMinutesSpent
-        - totalYearlyEarnings
+        - totalDailyMinutesSpent
+        - totalDailyEarnings
         - maxDailyMinutesSpent
       properties:
         totalKings:
           type: integer
           description: Número total de usuários cadastrados
           example: 150
-        totalYearlyMinutesSpent:
+        totalDailyMinutesSpent:
           type: integer
-          description: Total de minutos anuais gastos por todos os usuários
-          example: 1080000
-        totalYearlyEarnings:
+          description: Total de minutos diários gastos por todos os usuários
+          example: 7200
+        totalDailyEarnings:
           type: number
           format: decimal
-          description: Total de ganhos anuais de todos os usuários
-          example: 2500000.50
+          description: Total de ganhos diários de todos os usuários
+          example: 18000.00
         maxDailyMinutesSpent:
           type: integer
           description: Maior tempo diário registrado por um usuário

@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 
 public record KingdomStatisticResponse(
         int totalKings,
-        int totalYearlyMinutesSpent,
-        BigDecimal totalYearlyEarnings,
+        int totalDailyMinutesSpent,
+        BigDecimal totalDailyEarnings,
         int maxDailyMinutesSpent) {
 
 }

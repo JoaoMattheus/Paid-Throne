@@ -225,8 +225,8 @@ class KingControllerTest {
         // Arrange
         KingdomStatisticResponse mockResponse = new KingdomStatisticResponse(
                 10,
-                72000,
-                BigDecimal.valueOf(120000.75),
+                1440,
+                BigDecimal.valueOf(300.00),
                 180
         );
 
@@ -237,8 +237,8 @@ class KingControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalKings").value(10))
-                .andExpect(jsonPath("$.totalYearlyMinutesSpent").value(72000))
-                .andExpect(jsonPath("$.totalYearlyEarnings").value(120000.75))
+                .andExpect(jsonPath("$.totalDailyMinutesSpent").value(1440))
+                .andExpect(jsonPath("$.totalDailyEarnings").value(300.00))
                 .andExpect(jsonPath("$.maxDailyMinutesSpent").value(180));
 
         verify(kingdomStatisticUseInCase, times(1)).getKingdomStatistics();
@@ -262,8 +262,8 @@ class KingControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalKings").value(0))
-                .andExpect(jsonPath("$.totalYearlyMinutesSpent").value(0))
-                .andExpect(jsonPath("$.totalYearlyEarnings").value(0))
+                .andExpect(jsonPath("$.totalDailyMinutesSpent").value(0))
+                .andExpect(jsonPath("$.totalDailyEarnings").value(0))
                 .andExpect(jsonPath("$.maxDailyMinutesSpent").value(0));
 
         verify(kingdomStatisticUseInCase, times(1)).getKingdomStatistics();
@@ -308,8 +308,8 @@ class KingControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalKings").value(Integer.MAX_VALUE))
-                .andExpect(jsonPath("$.totalYearlyMinutesSpent").value(Integer.MAX_VALUE))
-                .andExpect(jsonPath("$.totalYearlyEarnings").value(999999999.99))
+                .andExpect(jsonPath("$.totalDailyMinutesSpent").value(Integer.MAX_VALUE))
+                .andExpect(jsonPath("$.totalDailyEarnings").value(999999999.99))
                 .andExpect(jsonPath("$.maxDailyMinutesSpent").value(1440));
 
         verify(kingdomStatisticUseInCase, times(1)).getKingdomStatistics();

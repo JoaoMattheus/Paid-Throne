@@ -161,8 +161,8 @@ Retorna estatísticas agregadas de todos os usuários.
 ```json
 {
   "totalKings": 150,
-  "totalYearlyMinutesSpent": 1080000,
-  "totalYearlyEarnings": 2500000.50,
+  "totalDailyMinutesSpent": 7200,
+  "totalDailyEarnings": 18000.00,
   "maxDailyMinutesSpent": 60
 }
 ```

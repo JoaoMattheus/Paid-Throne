@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class KingdomEntity {
     private int totalKings;
-    private int totalYearlyMinutesSpent;
-    private BigDecimal totalYearlyEarnings;
+    private int totalDailyMinutesSpent;
+    private BigDecimal totalDailyEarnings;
     private int maxDailyMinutesSpent;
 }

@@ -13,8 +13,8 @@ public class KingdomStatisticResponseMapper {
     public KingdomStatisticResponse toKingdomStatisticResponse(KingdomEntity stats) {
         return new KingdomStatisticResponse(
                 stats.getTotalKings(),
-                stats.getTotalYearlyMinutesSpent(),
-                stats.getTotalYearlyEarnings(),
+                stats.getTotalDailyMinutesSpent(),
+                stats.getTotalDailyEarnings(),
                 stats.getMaxDailyMinutesSpent()
         );
     }

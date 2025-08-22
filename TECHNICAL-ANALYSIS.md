@@ -88,8 +88,8 @@ porcentagem_turno = (tempo_banheiro ÷ tempo_trabalho) × 100
 ```json
 {
   "totalKings": 150,
-  "totalYearlyMinutesSpent": 1080000,
-  "totalYearlyEarnings": 2500000.50,
+  "totalDailyMinutesSpent": 7200,
+  "totalDailyEarnings": 18000.00,
   "maxDailyMinutesSpent": 60
 }
 ```

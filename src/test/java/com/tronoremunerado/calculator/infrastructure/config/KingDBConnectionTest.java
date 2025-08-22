@@ -183,8 +183,8 @@ class KingDBConnectionTest {
         void shouldReturnKingdomStatisticsSuccessfully() throws SQLException {
             // Given
             when(resultSet.getInt(1)).thenReturn(5); // totalKings
-            when(resultSet.getInt(2)).thenReturn(576000); // totalYearlyMinutesSpent
-            when(resultSet.getBigDecimal(3)).thenReturn(new BigDecimal("144000.00")); // totalYearlyEarnings
+            when(resultSet.getInt(2)).thenReturn(2400); // totalDailyMinutesSpent
+            when(resultSet.getBigDecimal(3)).thenReturn(new BigDecimal("600.00")); // totalDailyEarnings
             when(resultSet.getInt(4)).thenReturn(480); // maxDailyMinutesSpent
 
             when(jdbcTemplate.queryForObject(anyString(), any(MapSqlParameterSource.class), any(RowMapper.class)))
@@ -199,15 +199,15 @@ class KingDBConnectionTest {
             // Then
             assertThat(result).isNotNull();
             assertThat(result.getTotalKings()).isEqualTo(5);
-            assertThat(result.getTotalYearlyMinutesSpent()).isEqualTo(576000);
-            assertThat(result.getTotalYearlyEarnings()).isEqualTo(new BigDecimal("144000.00"));
+            assertThat(result.getTotalDailyMinutesSpent()).isEqualTo(2400);
+            assertThat(result.getTotalDailyEarnings()).isEqualTo(new BigDecimal("600.00"));
             assertThat(result.getMaxDailyMinutesSpent()).isEqualTo(480);
 
             ArgumentCaptor<String> sqlCaptor = ArgumentCaptor.forClass(String.class);
             verify(jdbcTemplate).queryForObject(sqlCaptor.capture(), any(MapSqlParameterSource.class), any(RowMapper.class));
 
             String capturedSql = sqlCaptor.getValue();
-            assertThat(capturedSql).contains("SELECT count(id), sum(yearly_minutes_spent), sum(yearly_earnings), MAX(daily_minutes_spent)");
+            assertThat(capturedSql).contains("SELECT count(id), sum(daily_minutes_spent), sum(daily_earnings), MAX(daily_minutes_spent)");
             assertThat(capturedSql).contains("FROM king");
         }
 
@@ -286,7 +286,7 @@ class KingDBConnectionTest {
             verify(jdbcTemplate).queryForObject(sqlCaptor.capture(), any(MapSqlParameterSource.class), any(RowMapper.class));
 
             String capturedSql = sqlCaptor.getValue();
-            assertThat(capturedSql).containsIgnoringWhitespaces("SELECT count(id), sum(yearly_minutes_spent), sum(yearly_earnings), MAX(daily_minutes_spent)");
+            assertThat(capturedSql).containsIgnoringWhitespaces("SELECT count(id), sum(daily_minutes_spent), sum(daily_earnings), MAX(daily_minutes_spent)");
             assertThat(capturedSql).containsIgnoringWhitespaces("FROM king");
         }
     }
