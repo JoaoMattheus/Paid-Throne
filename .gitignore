@@ -60,3 +60,18 @@ build/
 # Code review file
 code-review.md
 
+# Environment files with sensitive data
+.env
+.env.local
+.env.production
+
+# Logs
+logs/
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
