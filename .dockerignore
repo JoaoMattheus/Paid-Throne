@@ -1,35 +1,5 @@
-# Ignorar arquivos desnecessários no build do Docker
-target/
-!target/*.jar
-*.log
-*.tmp
-
-# IDEs
-.idea/
-.vscode/
-*.iml
-*.iws
-*.ipr
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Git
-.git/
-.gitignore
-
-# Docker
-Dockerfile
-docker-compose.yml
-.dockerignore
-
-# Documentation
-README.md
-*.md
-
-# Maven
-.mvn/
-
-# Logs
-logs/
+.git
+storage/logs/*.log
+.env
+vendor/
+node_modules/
