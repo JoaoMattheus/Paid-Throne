@@ -22,9 +22,7 @@ final class CalculatorService
         $monthlyMinutes = $this->salaryCalculator->calculateMinutesSpent($king, 'MONTHLY');
         $yearlyMinutes = $this->salaryCalculator->calculateMinutesSpent($king, 'YEARLY');
 
-        $dailyEarnings = round($this->salaryCalculator->calculateTotalEarningsInBathroom($king, 'DAILY'), 2);
-        $monthlyEarnings = round($this->salaryCalculator->calculateTotalEarningsInBathroom($king, 'MONTHLY'), 2);
-        $yearlyEarnings = round($this->salaryCalculator->calculateTotalEarningsInBathroom($king, 'YEARLY'), 2);
+        $breakdowns = $this->salaryCalculator->calculateBreakdowns($king);
 
         $minutesWorked = WorkSchedule::getMinutesWorked($king->workSchedule, 'DAILY');
         $dailyPercentage = round($this->bathroomCalculator->calculateDailyPercentageOfShift(
@@ -37,9 +35,9 @@ final class CalculatorService
             $dailyMinutes,
             $monthlyMinutes,
             $yearlyMinutes,
-            $dailyEarnings,
-            $monthlyEarnings,
-            $yearlyEarnings,
+            $breakdowns['DAILY'],
+            $breakdowns['MONTHLY'],
+            $breakdowns['YEARLY'],
             $dailyPercentage
         );
     }
