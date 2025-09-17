@@ -1,44 +1,31 @@
-# Multi-stage build para otimizar o tamanho da imagem final
-FROM maven:3.9.4-eclipse-temurin-17 as build
+FROM php:8.2-apache
 
-# Define o diretório de trabalho
-WORKDIR /app
+# Habilita módulos necessários
+RUN a2enmod rewrite headers expires
 
-# Copia apenas os arquivos necessários para o build (otimiza cache do Docker)
-COPY pom.xml .
-COPY src ./src
+# Copia arquivos para o container
+COPY public/ /var/www/html/
+COPY app/ /var/www/html/app/
+COPY templates/ /var/www/html/templates/
+COPY bootstrap.php /var/www/html/
+COPY storage/ /var/www/html/storage/
+COPY .env.example /var/www/html/
 
-# Executa o build da aplicação (skip tests para agilizar - opcional)
-RUN mvn clean package -DskipTests
+# Ajusta permissões para logs
+RUN chown -R www-data:www-data /var/www/html/storage
 
-# Stage final - imagem mais leve
-FROM eclipse-temurin:17-jre-alpine
+# Define diretório de trabalho
+WORKDIR /var/www/html
 
-# Cria um usuário não-root para segurança
-RUN addgroup -g 1001 -S appgroup && \
-    adduser -S appuser -u 1001 -G appgroup
+# Configura diretivas básicas para cache
+RUN printf '<Directory /var/www/html>\n    AllowOverride All\n    Require all granted\n</Directory>\n' > /etc/apache2/conf-available/trono.conf \
+    && a2enconf trono
 
-# Define o diretório de trabalho
-WORKDIR /app
+ENV APP_NAME="Trono Remunerado" \
+    APP_URL="http://localhost" \
+    APP_ENV="production" \
+    APP_TIMEZONE="America/Sao_Paulo"
 
-# Copia o JAR compilado do stage anterior
-COPY --from=build /app/target/calculator-0.0.1-SNAPSHOT.jar calculator.jar
+EXPOSE 80
 
-# Ajusta as permissões
-RUN chown appuser:appgroup calculator.jar
-
-# Muda para o usuário não-root
-USER appuser
-
-# Define variáveis de ambiente padrão (podem ser sobrescritas)
-ENV PORT=8080
-ENV SPRING_PROFILES_ACTIVE=prod
-
-# Expõe a porta
-EXPOSE ${PORT}
-
-# Configurações da JVM para containers
-ENV JAVA_OPTS="-Xms256m -Xmx512m -Dspring.profiles.active=${SPRING_PROFILES_ACTIVE}"
-
-# Comando para iniciar a aplicação
-ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar calculator.jar"]
+CMD ["apache2-foreground"]
