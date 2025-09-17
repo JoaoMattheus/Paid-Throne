@@ -1,0 +1,11 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Remove extensão .php da URL
+    RewriteCond %{THE_REQUEST} \s/+([^.]+)\.php [NC]
+    RewriteRule ^ %1 [R=301,L]
+
+    # Mapear rotas amigáveis para os arquivos PHP
+    RewriteRule ^contato/?$ contato.php [L]
+    RewriteRule ^privacidade/?$ privacidade.php [L]
+</IfModule>
