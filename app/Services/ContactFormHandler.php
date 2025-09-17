@@ -16,15 +16,19 @@ final class ContactFormHandler
     {
         $recipient = env('CONTACT_RECIPIENT_EMAIL');
         $subject = 'Novo contato via Trono Remunerado';
+        $safeName = $this->sanitizeHeaderValue($data['nome']);
+        $safeEmail = $this->sanitizeHeaderValue($data['email']);
+        $safeMessage = $this->sanitizeBody($data['mensagem']);
+
         $body = sprintf("Nome: %s\nEmail: %s\nMensagem:\n%s\nData: %s\n",
-            $data['nome'],
-            $data['email'],
-            $data['mensagem'],
+            $safeName,
+            $safeEmail,
+            $safeMessage,
             (new \DateTimeImmutable())->format('d/m/Y H:i:s')
         );
 
         if ($recipient && filter_var($recipient, FILTER_VALIDATE_EMAIL)) {
-            $headers = sprintf("From: %s\r\nReply-To: %s\r\n", $data['email'], $data['email']);
+            $headers = sprintf("From: %s\r\nReply-To: %s\r\n", $safeEmail, $safeEmail);
             $sent = @mail($recipient, $subject, $body, $headers);
             if ($sent) {
                 return [
@@ -50,5 +54,18 @@ final class ContactFormHandler
         }
 
         file_put_contents(self::LOG_FILE, $content . str_repeat('-', 60) . PHP_EOL, FILE_APPEND | LOCK_EX);
+    }
+
+    private function sanitizeHeaderValue(string $value): string
+    {
+        $value = trim($value);
+        $value = preg_replace('/[\r\n]+/', ' ', $value) ?? '';
+        return substr($value, 0, 255);
+    }
+
+    private function sanitizeBody(string $value): string
+    {
+        $normalized = preg_replace("/[\r\n]+/", PHP_EOL, trim($value)) ?? '';
+        return $normalized;
     }
 }

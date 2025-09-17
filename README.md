@@ -49,6 +49,8 @@ cp .env.example .env
 | `CONTACT_RECIPIENT_EMAIL` | Destinatário do formulário de contato. |
 | `CACHE_TTL` | TTL sugerido para conteúdo estático (em segundos). |
 
+> Valores com espaços podem ser envolvidos por aspas no `.env` (ex.: `APP_NAME="Trono Remunerado"`).
+
 ### 3. Servindo localmente
 
 #### Usando o servidor embutido do PHP

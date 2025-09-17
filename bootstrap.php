@@ -18,6 +18,18 @@ if (!function_exists('str_contains')) {
     }
 }
 
+if (!function_exists('str_ends_with')) {
+    function str_ends_with(string $haystack, string $needle): bool
+    {
+        $needleLength = strlen($needle);
+        if ($needleLength === 0) {
+            return true;
+        }
+
+        return substr($haystack, -$needleLength) === $needle;
+    }
+}
+
 spl_autoload_register(function (string $class): void {
     $prefix = 'App\\';
     $class = ltrim($class, '\\');
@@ -49,12 +61,38 @@ function loadEnv(string $path): void
             continue;
         }
 
+        if (str_starts_with($line, 'export ')) {
+            $line = substr($line, 7);
+        }
+
         if (!str_contains($line, '=')) {
             continue;
         }
 
         [$name, $value] = explode('=', $line, 2);
         $name = trim($name);
+        $value = trim($value);
+
+        if ($name === '') {
+            continue;
+        }
+
+        if ($value !== '') {
+            $firstCharacter = $value[0];
+            if (($firstCharacter === "\"" || $firstCharacter === "'") && str_ends_with($value, $firstCharacter)) {
+                $value = substr($value, 1, -1);
+                if ($firstCharacter === "\"") {
+                    $value = stripcslashes($value);
+                }
+            } else {
+                $hashPosition = strpos($value, '#');
+                if ($hashPosition !== false) {
+                    $value = rtrim(substr($value, 0, $hashPosition));
+                }
+                $value = str_replace('\\#', '#', $value);
+            }
+        }
+
         $value = trim($value);
 
         if (!array_key_exists($name, $_ENV)) {
