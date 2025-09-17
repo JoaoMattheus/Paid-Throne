@@ -291,6 +291,12 @@ img {
     gap: 0.6rem;
 }
 
+.result-card__note {
+    margin: 0.75rem 0 0;
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+}
+
 .results__empty {
     color: var(--color-text-muted);
 }
@@ -432,7 +438,7 @@ img {
     }
 
     .results__grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     }
 
     .seo-section__grid {

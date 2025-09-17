@@ -170,10 +170,43 @@ require BASE_PATH . '/templates/partials/header.php';
                 <article class="result-card">
                     <h3>Ganhos no trono</h3>
                     <ul>
-                        <li><strong>Diário:</strong> <?= sanitize_output(format_currency($result->dailyEarnings)); ?></li>
-                        <li><strong>Mensal:</strong> <?= sanitize_output(format_currency($result->monthlyEarnings)); ?></li>
-                        <li><strong>Anual:</strong> <?= sanitize_output(format_currency($result->yearlyEarnings)); ?></li>
+                        <li>
+                            <strong>Diário:</strong>
+                            <?= sanitize_output(format_currency($result->dailySalary->netEarnings)); ?> líquidos
+                            (<?= sanitize_output(format_currency($result->dailySalary->grossEarnings)); ?> brutos)
+                        </li>
+                        <li>
+                            <strong>Mensal:</strong>
+                            <?= sanitize_output(format_currency($result->monthlySalary->netEarnings)); ?> líquidos
+                            (<?= sanitize_output(format_currency($result->monthlySalary->grossEarnings)); ?> brutos)
+                        </li>
+                        <li>
+                            <strong>Anual:</strong>
+                            <?= sanitize_output(format_currency($result->yearlySalary->netEarnings)); ?> líquidos
+                            (<?= sanitize_output(format_currency($result->yearlySalary->grossEarnings)); ?> brutos)
+                        </li>
                     </ul>
+                </article>
+                <article class="result-card">
+                    <h3>Tributos proporcionais</h3>
+                    <ul>
+                        <li>
+                            <strong>Diário:</strong>
+                            INSS <?= sanitize_output(format_currency($result->dailySalary->inss)); ?> ·
+                            IRRF <?= sanitize_output(format_currency($result->dailySalary->irrf)); ?>
+                        </li>
+                        <li>
+                            <strong>Mensal:</strong>
+                            INSS <?= sanitize_output(format_currency($result->monthlySalary->inss)); ?> ·
+                            IRRF <?= sanitize_output(format_currency($result->monthlySalary->irrf)); ?>
+                        </li>
+                        <li>
+                            <strong>Anual:</strong>
+                            INSS <?= sanitize_output(format_currency($result->yearlySalary->inss)); ?> ·
+                            IRRF <?= sanitize_output(format_currency($result->yearlySalary->irrf)); ?>
+                        </li>
+                    </ul>
+                    <p class="result-card__note">Valores proporcionais à parte do salário conquistada no trono.</p>
                 </article>
                 <article class="result-card">
                     <h3>Impacto no expediente</h3>

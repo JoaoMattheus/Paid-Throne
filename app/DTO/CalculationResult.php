@@ -10,9 +10,9 @@ final class CalculationResult
         public readonly int $dailyMinutesSpent,
         public readonly int $monthlyMinutesSpent,
         public readonly int $yearlyMinutesSpent,
-        public readonly float $dailyEarnings,
-        public readonly float $monthlyEarnings,
-        public readonly float $yearlyEarnings,
+        public readonly SalaryBreakdown $dailySalary,
+        public readonly SalaryBreakdown $monthlySalary,
+        public readonly SalaryBreakdown $yearlySalary,
         public readonly float $dailyShiftPercentage
     ) {
     }
