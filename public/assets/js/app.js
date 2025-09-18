@@ -1,0 +1,1 @@
+../../app/Assets/js/app.js
