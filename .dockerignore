@@ -1,5 +1,0 @@
-.git
-storage/logs/*.log
-.env
-vendor/
-node_modules/

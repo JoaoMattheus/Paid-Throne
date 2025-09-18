@@ -1,7 +1,0 @@
-/vendor/
-.env
-storage/logs/*.log
-/node_modules/
-.idea/
-.vscode/
-.DS_Store
