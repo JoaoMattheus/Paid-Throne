@@ -1,0 +1,22 @@
+CREATE TABLE IF NOT EXISTS submissions (
+  id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+  nickname VARCHAR(40) NOT NULL,
+  scale_code ENUM('5x2','6x1','12x36','4x2') NOT NULL,
+  minutes_per_day TINYINT UNSIGNED NOT NULL,
+  days_per_week DECIMAL(4,2) NOT NULL,
+  hours_per_day DECIMAL(4,2) NOT NULL,
+  days_per_month DECIMAL(6,2) NOT NULL,
+  work_hours_per_month DECIMAL(7,2) NOT NULL,
+  throne_minutes_month INT UNSIGNED NOT NULL,
+  throne_minutes_year INT UNSIGNED NOT NULL,
+  throne_money_month DECIMAL(12,2) NOT NULL,
+  throne_money_year DECIMAL(12,2) NOT NULL,
+  scale_version SMALLINT UNSIGNED NOT NULL DEFAULT 1,
+  ip_hash CHAR(64) NULL,
+  user_agent VARCHAR(255) NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX ix_scale_time (scale_code, throne_minutes_month DESC),
+  INDEX ix_scale_money (scale_code, throne_money_month DESC),
+  INDEX ix_short_reigns (scale_code, throne_minutes_month ASC),
+  INDEX ix_created (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
